@@ -1,5 +1,5 @@
-variable bootstrap_password {
-  type = string
+variable "bootstrap_password" {
+  type    = string
   default = "changemerealquickamigo"
 }
 
