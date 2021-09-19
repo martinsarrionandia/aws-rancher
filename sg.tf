@@ -13,7 +13,7 @@ resource "aws_security_group_rule" "racher_ssh" {
   cidr_blocks       = ["0.0.0.0/0"]
 }
 
-resource "aws_security_group_rule" "racher_http" {
+resource "aws_security_group_rule" "ingress_http" {
   security_group_id = aws_security_group.rancher.id
   type              = "ingress"
   from_port         = 0
@@ -22,11 +22,29 @@ resource "aws_security_group_rule" "racher_http" {
   cidr_blocks       = ["0.0.0.0/0"]
 }
 
-resource "aws_security_group_rule" "racher_https" {
+resource "aws_security_group_rule" "ingress_https" {
   security_group_id = aws_security_group.rancher.id
   type              = "ingress"
   from_port         = 0
   to_port           = 443
+  protocol          = "tcp"
+  cidr_blocks       = ["0.0.0.0/0"]
+}
+
+resource "aws_security_group_rule" "racher_admin_http" {
+  security_group_id = aws_security_group.rancher.id
+  type              = "ingress"
+  from_port         = 0
+  to_port           = var.rancher_admin_http
+  protocol          = "tcp"
+  cidr_blocks       = ["0.0.0.0/0"]
+}
+
+resource "aws_security_group_rule" "racher_admin_https" {
+  security_group_id = aws_security_group.rancher.id
+  type              = "ingress"
+  from_port         = 0
+  to_port           = var.rancher_admin_https
   protocol          = "tcp"
   cidr_blocks       = ["0.0.0.0/0"]
 }

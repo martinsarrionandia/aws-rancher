@@ -21,5 +21,5 @@ provider "rancher2" {
 }
 
 locals {
-  api_url = "https://${aws_instance.rancher.public_ip}"
+  api_url = "https://${var.host_name}.${var.domain_name}:${var.rancher_admin_https}"
 }
