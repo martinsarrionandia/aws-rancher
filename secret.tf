@@ -7,7 +7,7 @@ data "aws_secretsmanager_secret_version" "rancher_admin_current" {
 }
 
 resource "aws_secretsmanager_secret" "rancher_token" {
-  name = "host/rancher/token"
+  name                    = "host/rancher/token"
   recovery_window_in_days = 0
 }
 

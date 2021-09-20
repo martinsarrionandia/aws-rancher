@@ -20,6 +20,18 @@ provider "rancher2" {
   insecure  = true
 }
 
+# Helm Provider
+provider "helm" {
+  kubernetes {
+    config_path = pathexpand("~/.kube/config")
+  }
+}
+
+# Kubernetes Provider
+provider "kubernetes" {
+  config_path    = pathexpand("~/.kube/config")
+}
+
 locals {
   api_url = "https://${var.host_name}.${var.domain_name}:${var.rancher_admin_https}"
 }

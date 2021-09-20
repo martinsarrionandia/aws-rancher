@@ -1,3 +1,8 @@
+variable "rancher_subnet_cidr" {
+  type    = string
+  default = "10.0.1.0/24"
+}
+
 variable "bootstrap_password" {
   type    = string
   default = "changemerealquickamigo"
@@ -21,6 +26,11 @@ variable "rancher_admin_http" {
 variable "rancher_admin_https" {
   type    = string
   default = "4434"
+}
+
+variable "rancher_mgmt_ranges" {
+  type    = list(string)
+  default = ["82.70.52.46/32"]
 }
 
 variable "ambassador_node_port_http" {
