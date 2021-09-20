@@ -21,6 +21,7 @@ resource "helm_release" "ambassador" {
 resource "kubernetes_service" "ambassador" {
   metadata {
     name = "ambassador-nodeport"
+    namespace = helm_release.ambassador.metadata.0.namespace
   }
   spec {
     selector = {
@@ -39,7 +40,7 @@ resource "kubernetes_service" "ambassador" {
     port {
       name = "https"
       port        = 443
-      target_port = 4434
+      target_port = 8443
       node_port   = var.ambassador_node_port_https
     }
 
