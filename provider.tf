@@ -30,8 +30,5 @@ provider "helm" {
 # Kubernetes Provider
 provider "kubernetes" {
   config_path    = pathexpand("~/.kube/config")
-}
-
-locals {
-  api_url = "https://${var.host_name}.${var.domain_name}:${var.rancher_admin_https}"
+  insecure = true
 }

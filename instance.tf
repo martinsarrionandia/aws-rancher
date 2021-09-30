@@ -1,5 +1,5 @@
 data "template_file" "rancher" {
-  template = file("${path.module}/templates/rancher-boot.tpl")
+  template = file("${path.module}/templates/rancher_boot.sh")
   vars = {
     bootstrap_password = jsondecode(data.aws_secretsmanager_secret_version.rancher_admin_current.secret_string)["admin"]
     acme_domain        = "${var.host_name}.${var.domain_name}"
@@ -41,12 +41,14 @@ data "aws_ami" "ubuntu" {
 }
 
 resource "aws_instance" "rancher" {
+  availability_zone = var.availability_zone
   ami           = data.aws_ami.ubuntu.id
   instance_type = "t3.medium"
   key_name      = "sarrionandia-eu-w2"
   root_block_device {
     volume_size = "16"
   }
+  iam_instance_profile = aws_iam_instance_profile.rancher.id
   user_data = data.template_file.rancher.rendered
 
   network_interface {
@@ -60,7 +62,8 @@ resource "aws_instance" "rancher" {
   #}
 
   tags = {
-    Name = "Rancher host"
+    Name = local.fqdn
+    Rancher = "True"
   }
 }
 

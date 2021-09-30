@@ -1,0 +1,22 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+      {
+          "Sid": "RancherVolumePermit",
+          "Effect": "Allow",
+          "Action": "ec2:AttachVolume",
+          "Resource": [
+              "arn:aws:ec2:*:281287281094:volume/*",
+              "arn:aws:ec2:*:281287281094:instance/*"
+          ],
+          "Condition": {
+              "StringEquals": {
+                  "aws:RequestTag/Rancher_Volume": "True"
+              },
+              "ForAllValues:StringEquals": {
+                  "aws:TagKeys": "Rancher_Volume"
+              }
+          }
+      }
+  ]
+}

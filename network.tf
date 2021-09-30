@@ -1,4 +1,5 @@
 resource "aws_subnet" "rancher" {
+  availability_zone = var.availability_zone
   vpc_id     = aws_vpc.container.id
   cidr_block = "10.0.1.0/24"
 

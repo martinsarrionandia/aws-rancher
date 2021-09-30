@@ -1,3 +1,4 @@
+# Hopefully not required for mounting EBS volumes. TBC.
 #resource "rancher2_cloud_credential" "foo" {
 #  name        = "foo"
 #  description = "foo test"

@@ -5,7 +5,12 @@ resource "helm_release" "ambassador" {
   repository       = "https://getambassador.io"
   chart            = "ambassador"
   #version          = "6.7.1100"
-  depends_on = [data.rancher2_cluster.local]
+  depends_on = [
+    data.rancher2_cluster.local,
+    local_file.kubectl,
+    aws_instance.rancher,
+    aws_security_group_rule.racher_admin_https
+  ]
 
   set {
     name  = "replicaCount"
@@ -46,4 +51,8 @@ resource "kubernetes_service" "ambassador" {
 
     type = "NodePort"
   }
+    depends_on = [
+      aws_instance.rancher,
+      aws_security_group_rule.racher_admin_https
+    ]
 }
