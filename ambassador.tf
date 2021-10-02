@@ -21,13 +21,6 @@ resource "helm_release" "ambassador" {
   }
 }
 
-resource "time_sleep" "ambassador_ready_timer" {
-  create_duration = "21s"
-  depends_on = [
-    helm_release.ambassador
-  ]
-}
-
 resource "kubernetes_service" "ambassador" {
   metadata {
     name = "ambassador-nodeport"
@@ -58,6 +51,5 @@ resource "kubernetes_service" "ambassador" {
   }
   depends_on = [
     local_file.kube_config,
-    time_sleep.ambassador_ready_timer
   ]
 }
