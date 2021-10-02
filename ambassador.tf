@@ -6,10 +6,8 @@ resource "helm_release" "ambassador" {
   chart            = "ambassador"
   #version          = "6.7.1100"
   depends_on = [
-    data.rancher2_cluster.local,
-    local_file.kubectl,
-    aws_instance.rancher,
-    aws_security_group_rule.racher_admin_https
+     time_sleep.cluster_ready_timer,
+     local_file.kube_config
   ]
 
   set {
@@ -21,6 +19,13 @@ resource "helm_release" "ambassador" {
     name  = "service.type"
     value = "ClusterIP"
   }
+}
+
+resource "time_sleep" "ambassador_ready_timer" {
+  create_duration = "21s"
+  depends_on = [
+    helm_release.ambassador
+  ]
 }
 
 resource "kubernetes_service" "ambassador" {
@@ -51,8 +56,8 @@ resource "kubernetes_service" "ambassador" {
 
     type = "NodePort"
   }
-    depends_on = [
-      aws_instance.rancher,
-      aws_security_group_rule.racher_admin_https
-    ]
+  depends_on = [
+    local_file.kube_config,
+    time_sleep.ambassador_ready_timer
+  ]
 }

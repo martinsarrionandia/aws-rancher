@@ -13,6 +13,11 @@ variable "bootstrap_password" {
   default = "changemerealquickamigo"
 }
 
+variable "instance_key_name" {
+  type = string
+  default = "sarrionandia-eu-w2"
+}
+
 variable "domain_name" {
   type    = string
   default = "sarrionandia.co.uk"

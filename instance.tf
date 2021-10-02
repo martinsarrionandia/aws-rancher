@@ -44,7 +44,7 @@ resource "aws_instance" "rancher" {
   availability_zone = var.availability_zone
   ami           = data.aws_ami.ubuntu.id
   instance_type = "t3.medium"
-  key_name      = "sarrionandia-eu-w2"
+  key_name      = var.instance_key_name
   root_block_device {
     volume_size = "16"
   }

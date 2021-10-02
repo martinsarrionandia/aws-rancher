@@ -8,6 +8,11 @@ resource "rancher2_bootstrap" "admin" {
   telemetry        = true
   depends_on = [
     aws_instance.rancher,
-    aws_security_group_rule.racher_admin_https
+    aws_eip.rancher_mgmt,
+    aws_security_group_rule.racher_admin_https,
+    aws_route53_record.rancher,
+    aws_internet_gateway.gw,
+    aws_route_table_association.rancher,
+    aws_route.internet_route
   ]
 }
