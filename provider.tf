@@ -23,12 +23,12 @@ provider "rancher2" {
 # Helm Provider
 provider "helm" {
   kubernetes {
-    config_path = pathexpand("~/.kube/config")
+    config_path = local_file.kube_config.filename
   }
 }
 
 # Kubernetes Provider
 provider "kubernetes" {
-  config_path    = pathexpand("~/.kube/config")
+  config_path    = local_file.kube_config.filename
   insecure = true
 }
