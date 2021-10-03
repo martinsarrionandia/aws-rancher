@@ -3,12 +3,12 @@ data "template_file" "rancher_volume_policy" {
 }
 
 resource "aws_iam_policy" "rancher_volumes" {
-  name               = "rancher_volume_policy"
+  name   = "rancher_volume_policy"
   policy = data.template_file.rancher_volume_policy.rendered
 }
 
 resource "aws_iam_role" "rancher" {
-  name = "rancher_role"
+  name               = "rancher_role"
   assume_role_policy = <<EOF
 {
   "Version": "2012-10-17",
@@ -29,8 +29,8 @@ EOF
 }
 
 resource "aws_iam_role_policy_attachment" "rancher_volumes" {
-    role = aws_iam_role.rancher.name
-    policy_arn = aws_iam_policy.rancher_volumes.arn
+  role       = aws_iam_role.rancher.name
+  policy_arn = aws_iam_policy.rancher_volumes.arn
 }
 resource "aws_iam_instance_profile" "rancher" {
   name = "rancher_profile"

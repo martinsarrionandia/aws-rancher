@@ -6,8 +6,8 @@ resource "helm_release" "ambassador" {
   chart            = "ambassador"
   #version          = "6.7.1100"
   depends_on = [
-     time_sleep.cluster_ready_timer,
-     local_file.kube_config
+    time_sleep.cluster_ready_timer,
+    local_file.kube_config
   ]
 
   set {
@@ -23,25 +23,25 @@ resource "helm_release" "ambassador" {
 
 resource "kubernetes_service" "ambassador" {
   metadata {
-    name = "ambassador-nodeport"
+    name      = "ambassador-nodeport"
     namespace = helm_release.ambassador.metadata.0.namespace
   }
   spec {
     selector = {
       "app.kubernetes.io/instance" = helm_release.ambassador.metadata.0.name
-      "app.kubernetes.io/name" = helm_release.ambassador.metadata.0.name
+      "app.kubernetes.io/name"     = helm_release.ambassador.metadata.0.name
     }
     session_affinity = "ClientIP"
 
     port {
-      name = "http"
+      name        = "http"
       port        = 80
       target_port = 8080
       node_port   = var.ambassador_node_port_http
     }
 
     port {
-      name = "https"
+      name        = "https"
       port        = 443
       target_port = 8443
       node_port   = var.ambassador_node_port_https

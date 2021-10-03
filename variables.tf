@@ -1,5 +1,5 @@
-variable availability_zone {
-  type = string
+variable "availability_zone" {
+  type    = string
   default = "eu-west-2a"
 }
 
@@ -14,7 +14,7 @@ variable "bootstrap_password" {
 }
 
 variable "instance_key_name" {
-  type = string
+  type    = string
   default = "sarrionandia-eu-w2"
 }
 

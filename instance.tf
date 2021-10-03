@@ -42,14 +42,14 @@ data "aws_ami" "ubuntu" {
 
 resource "aws_instance" "rancher" {
   availability_zone = var.availability_zone
-  ami           = data.aws_ami.ubuntu.id
-  instance_type = "t3.medium"
-  key_name      = var.instance_key_name
+  ami               = data.aws_ami.ubuntu.id
+  instance_type     = "t3.medium"
+  key_name          = var.instance_key_name
   root_block_device {
     volume_size = "16"
   }
   iam_instance_profile = aws_iam_instance_profile.rancher.id
-  user_data = data.template_file.rancher.rendered
+  user_data            = data.template_file.rancher.rendered
 
   network_interface {
     network_interface_id = aws_network_interface.rancher_mgmt.id
@@ -62,7 +62,7 @@ resource "aws_instance" "rancher" {
   #}
 
   tags = {
-    Name = local.fqdn
+    Name    = local.fqdn
     Rancher = "True"
   }
 }
