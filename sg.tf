@@ -1,3 +1,7 @@
+data "http" "my_current_ip" {
+  url = "http://ipv4.icanhazip.com"
+}
+
 resource "aws_security_group" "rancher_mgmt" {
   name        = "Rancher Mgmt"
   description = "Allow Rancher Management and Web"
@@ -7,28 +11,28 @@ resource "aws_security_group" "rancher_mgmt" {
 resource "aws_security_group_rule" "racher_ssh" {
   security_group_id = aws_security_group.rancher_mgmt.id
   type              = "ingress"
-  from_port         = 0
+  from_port         = 22
   to_port           = 22
   protocol          = "tcp"
-  cidr_blocks       = var.rancher_mgmt_ranges
+  cidr_blocks       = ["${chomp(data.http.my_current_ip.response_body)}/32"]
 }
 
 resource "aws_security_group_rule" "racher_admin_http" {
   security_group_id = aws_security_group.rancher_mgmt.id
   type              = "ingress"
-  from_port         = 0
+  from_port         = var.rancher_admin_http
   to_port           = var.rancher_admin_http
   protocol          = "tcp"
-  cidr_blocks       = var.rancher_mgmt_ranges
+  cidr_blocks       = ["${chomp(data.http.my_current_ip.response_body)}/32"]
 }
 
 resource "aws_security_group_rule" "racher_admin_https" {
   security_group_id = aws_security_group.rancher_mgmt.id
   type              = "ingress"
-  from_port         = 0
+  from_port         = var.rancher_admin_https
   to_port           = var.rancher_admin_https
   protocol          = "tcp"
-  cidr_blocks       = var.rancher_mgmt_ranges
+  cidr_blocks       = ["${chomp(data.http.my_current_ip.response_body)}/32"]
 }
 
 resource "aws_security_group_rule" "outbound_all" {
@@ -49,7 +53,7 @@ resource "aws_security_group" "rancher_ingress" {
 resource "aws_security_group_rule" "ingress_http" {
   security_group_id = aws_security_group.rancher_ingress.id
   type              = "ingress"
-  from_port         = 0
+  from_port         = 80
   to_port           = 80
   protocol          = "tcp"
   cidr_blocks       = ["0.0.0.0/0"]
@@ -58,7 +62,7 @@ resource "aws_security_group_rule" "ingress_http" {
 resource "aws_security_group_rule" "ingress_https" {
   security_group_id = aws_security_group.rancher_ingress.id
   type              = "ingress"
-  from_port         = 0
+  from_port         = 443
   to_port           = 443
   protocol          = "tcp"
   cidr_blocks       = ["0.0.0.0/0"]
@@ -68,7 +72,7 @@ resource "aws_security_group_rule" "outbound_http" {
   # Allow Ambassador to ACME service
   security_group_id = aws_security_group.rancher_ingress.id
   type              = "egress"
-  from_port         = 0
+  from_port         = 80
   to_port           = 80
   protocol          = "tcp"
   cidr_blocks       = ["0.0.0.0/0"]

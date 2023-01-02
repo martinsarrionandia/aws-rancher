@@ -1,10 +1,6 @@
-data "template_file" "rancher_volume_policy" {
-  template = file("${path.module}/templates/rancher_volume_policy.json")
-}
-
 resource "aws_iam_policy" "rancher_volumes" {
   name   = "rancher_volume_policy"
-  policy = data.template_file.rancher_volume_policy.rendered
+  policy = templatefile("${path.module}/templates/rancher_volume_policy.json", {}) 
 }
 
 resource "aws_iam_role" "rancher" {
