@@ -38,17 +38,12 @@ variable "rancher_admin_https" {
   default = "4434"
 }
 
-variable "rancher_mgmt_ranges" {
-  type    = list(string)
-  default = ["82.70.52.46/32"]
-}
-
-variable "ambassador_node_port_http" {
+variable "emissary_node_port_http" {
   type    = string
   default = "30080"
 }
 
-variable "ambassador_node_port_https" {
+variable "emissary_node_port_https" {
   type    = string
   default = "30443"
 }

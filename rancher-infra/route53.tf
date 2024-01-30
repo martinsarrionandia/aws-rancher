@@ -8,5 +8,5 @@ resource "aws_route53_record" "rancher" {
   name    = "${var.host_name}.${var.domain_name}"
   type    = "A"
   ttl     = "300"
-  records = [aws_eip.rancher_mgmt.public_ip]
+  records = [aws_eip.rancher.public_ip]
 }

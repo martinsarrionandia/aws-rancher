@@ -3,8 +3,8 @@ resource "helm_release" "ambassador" {
   namespace        = "ambassador"
   name             = "ambassador"
   repository       = "https://getambassador.io"
-  chart            = "ambassador"
-  version          = "6.7.1100"
+  chart            = "emissary-ingress"
+  version          = "8.9.1"
   depends_on = [
     time_sleep.cluster_ready_timer,
     local_file.kube_config
