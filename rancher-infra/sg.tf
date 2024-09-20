@@ -69,7 +69,7 @@ resource "aws_security_group_rule" "ingress_https" {
 }
 
 resource "aws_security_group_rule" "outbound_http" {
-  # Allow emissary to ACME service
+  # Allow traefik to ACME service
   security_group_id = aws_security_group.rancher_ingress.id
   type              = "egress"
   from_port         = 80

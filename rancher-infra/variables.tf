@@ -38,12 +38,12 @@ variable "rancher_admin_https" {
   default = "4434"
 }
 
-variable "emissary_node_port_http" {
+variable "traefik_node_port_http" {
   type    = string
   default = "30080"
 }
 
-variable "emissary_node_port_https" {
+variable "traefik_node_port_https" {
   type    = string
   default = "30443"
 }
