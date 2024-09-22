@@ -23,6 +23,12 @@
             "Effect": "Allow",
             "Action": "ec2:DescribeVolumes",
             "Resource": "*"
+        },
+        {
+            "Sid": "RancherInstanceDescribe",
+            "Effect": "Allow",
+            "Action": "ec2:DescribeInstances",
+            "Resource": "*"
         }
     ]
 }

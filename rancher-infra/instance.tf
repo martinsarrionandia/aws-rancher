@@ -58,6 +58,11 @@ resource "aws_instance" "rancher" {
     Name    = local.fqdn
     Rancher = "True"
   }
+
+  provisioner "local-exec" {
+    command = "ssh-keygen -R ${self.tags.Name}"
+    when    = destroy
+  }
 }
 
 resource "aws_network_interface" "rancher" {
@@ -69,6 +74,7 @@ resource "aws_network_interface" "rancher" {
     Name = "Rancher"
   }
 }
+
 
 resource "aws_eip" "rancher" {
   network_interface = aws_network_interface.rancher.id

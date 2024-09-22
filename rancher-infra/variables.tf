@@ -35,7 +35,7 @@ variable "rancher_admin_http" {
 
 variable "rancher_admin_https" {
   type    = string
-  default = "4434"
+  default = "443"
 }
 
 variable "traefik_node_port_http" {
