@@ -1,36 +1,30 @@
 #!/bin/bash
 
-#Update APT
-sudo apt-get update && sudo apt-get -y upgrade
+#ENV
+export LOCAL_IPV4=$(ec2-metadata -o --quiet)/32
+export PUBLIC_IPV4=$(ec2-metadata -v --quiet)/32
 
-#Install Docker
-sudo apt install net-tools -y
-#sudo apt-get install docker.io -y
-#sudo systemctl enable docker
-#sudo systemctl start docker
+#sudo apt-get update && sudo apt-get -y upgrade
 
+sudo dnf update -y
 
-#Install Rancher
+#Install Tools
+
+sudo dnf install -y net-tools iotop
+
+#Network settings
+
 sudo sysctl -w net/netfilter/nf_conntrack_max=131072
 
-#net.bridge.bridge-nf-call-iptables=1
+#Install K3S
 
-#sudo docker run -e CATTLE_BOOTSTRAP_PASSWORD='${bootstrap_password}' -d --restart=unless-stopped \
-#-p 80:80 \
-#-p 443:${traefik_node_port_https} \
-#-p ${rancher_admin_http}:80 \
-#-p ${rancher_admin_https}:443 \
-#--privileged rancher/rancher:latest \
-#--acme-domain "${acme_domain}"
+export K3S_SCRIPT="k3s.sh"
 
+sudo -i curl -sfLo $K3S_SCRIPT https://get.k3s.io
+sudo -i chmod 755 $K3S_SCRIPT
+sudo -i ./$K3S_SCRIPT --node-external-ip="${public-ip}"
 
-
-curl -sfL https://get.k3s.io | sh -
-
-curl -LO https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl
-
-sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubect
-
+#Install kubectl
 
 cat > /etc/profile.d/kubeconfig.sh << EOF
 export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
@@ -40,30 +34,58 @@ chmod 755 /etc/profile.d/kubeconfig.sh
 
 export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
 
+#Install HELM
 
-sudo snap install helm --classic
+curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+
+
+#Add Repos
 
 helm repo add rancher-stable https://releases.rancher.com/server-charts/stable
-
-kubectl create namespace cattle-system
-kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.11.0/cert-manager.crds.yaml
-kubectl create namespace cert-manager
 helm repo add jetstack https://charts.jetstack.io
-
 helm repo update
 
-helm install cert-manager jetstack/cert-manager --namespace cert-manager --version v1.11.01
+#Install Cert Manager
+
+kubectl create namespace cert-manager
+
+helm install cert-manager jetstack/cert-manager --namespace cert-manager --version v1.15.3 --set crds.enabled=true
+
+# Create IP Whitelist for rancher/API access
+
+kubectl create namespace middleware
+
+export WHITELIST=/root/whitelist.yaml
 
 
+cat > $WHITELIST << EOF
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  namespace: middleware
+  name: rancher-ip-whitelist
+spec:
+  ipWhiteList:
+    sourceRange:
+      - "10.0.0.0/8"
+      - "$PUBLIC_IPV4"   
+      - "${ip-whitelist}"
+EOF
+
+kubectl apply -f $WHITELIST
+
+#Intall Rancher
+
+kubectl create namespace cattle-system
 
 helm install rancher rancher-stable/rancher \
   --namespace cattle-system \
-  --set hostname="${acme_domain}" \
-  --set bootstrapPassword="${bootstrap_password}" \
-  --set letsEncrypt.ingress.class=traefik \
-  --set ingress.tls.source=letsEncrypt \
+  --set hostname="${acme-domain}" \
+  --set bootstrapPassword="${bootstrap-password}" \
+  --set ingress.extraAnnotations."traefik\.ingress\.kubernetes\.io\/router\.middlewares"="middleware-rancher-ip-whitelist@kubernetescrd"
 
+  #--set letsEncrypt.ingress.class=traefik \
+  #--set letsEncrypt.email="${letsencrypt-email}" \
+  #--set ingress.tls.source=letsEncrypt
 
-
-# --priviledged is required to remap 4434 to 443
-#-p 80:${traefik_node_port_http} \
+kubectl patch svc traefik -p '{"spec":{"externalTrafficPolicy":"Local"}}' -n kube-system

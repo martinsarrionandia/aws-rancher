@@ -1,11 +1,15 @@
-output "api_url" {
+output "api-url" {
   value = local.api_url
 }
 
-output "traefik_node_port_http" {
-  value = var.traefik_node_port_http
+output "public-ip" {
+  value = aws_eip.rancher.public_ip
 }
 
-output "traefik_node_port_https" {
-  value = var.traefik_node_port_https
+output "rancher-role-arn" {
+  value = aws_iam_role.rancher.arn
+}
+
+output "region" {
+  value = var.region
 }

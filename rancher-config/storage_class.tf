@@ -1,6 +1,6 @@
 resource "kubernetes_storage_class" "amazon-ebs" {
   metadata {
-    name = "amazon-ebs"
+    name = var.amazon-ebs-class
   }
   storage_provisioner = "ebs.csi.aws.com"
   reclaim_policy      = "Retain"

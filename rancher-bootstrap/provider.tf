@@ -2,18 +2,17 @@
 provider "rancher2" {
   alias = "bootstrap"
 
-  api_url   = data.terraform_remote_state.rancher-infra.outputs.api_url
+  api_url   = data.terraform_remote_state.rancher-infra.outputs.api-url
   bootstrap = true
-  insecure  = true
+  insecure  = false
   timeout   = "300s"
 }
 
 # Provider rancher2 post bootstrap
 provider "rancher2" {
 
-  api_url   = data.terraform_remote_state.rancher-infra.outputs.api_url
+  api_url   = data.terraform_remote_state.rancher-infra.outputs.api-url
   token_key = rancher2_bootstrap.admin.token
-  insecure  = true
 }
 
 # Helm Provider
@@ -26,5 +25,5 @@ provider "helm" {
 # Kubernetes Provider
 provider "kubernetes" {
   config_path = local_file.kube_config.filename
-  insecure    = true
+  insecure    = false
 }

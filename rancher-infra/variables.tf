@@ -1,49 +1,39 @@
-variable "availability_zone" {
+variable "region"{
+  type = string
+  default = "eu-west-2"
+}
+
+variable "availability-zone" {
   type    = string
   default = "eu-west-2a"
 }
 
-variable "rancher_subnet_cidr" {
+variable "rancher-subnet-cidr" {
   type    = string
   default = "10.0.1.0/24"
 }
 
-variable "bootstrap_password" {
-  type    = string
-  default = "changemerealquickamigo"
-}
-
-variable "instance_key_name" {
+variable "instance-key-name" {
   type    = string
   default = "sarrionandia-eu-w2"
 }
 
-variable "domain_name" {
+variable "domain-name" {
   type    = string
   default = "sarrionandia.co.uk"
 }
 
-variable "host_name" {
+variable "host-name" {
   type    = string
   default = "rancher"
 }
 
-variable "rancher_admin_http" {
+variable "letsencrypt-email" {
   type    = string
-  default = "8080"
+  default = "martin@sarrionandia.co.uk"
 }
 
-variable "rancher_admin_https" {
+variable "cluster-issuer" {
   type    = string
-  default = "443"
-}
-
-variable "traefik_node_port_http" {
-  type    = string
-  default = "30080"
-}
-
-variable "traefik_node_port_https" {
-  type    = string
-  default = "30443"
+  default = "letsencrypt-production"
 }

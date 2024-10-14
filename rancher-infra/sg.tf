@@ -17,22 +17,13 @@ resource "aws_security_group_rule" "racher_ssh" {
   cidr_blocks       = ["${chomp(data.http.my_current_ip.response_body)}/32"]
 }
 
-resource "aws_security_group_rule" "racher_admin_http" {
+resource "aws_security_group_rule" "k3s_6443" {
   security_group_id = aws_security_group.rancher_mgmt.id
   type              = "ingress"
-  from_port         = var.rancher_admin_http
-  to_port           = var.rancher_admin_http
+  from_port         = 6443
+  to_port           = 6443
   protocol          = "tcp"
-  cidr_blocks       = ["${chomp(data.http.my_current_ip.response_body)}/32"]
-}
-
-resource "aws_security_group_rule" "racher_admin_https" {
-  security_group_id = aws_security_group.rancher_mgmt.id
-  type              = "ingress"
-  from_port         = var.rancher_admin_https
-  to_port           = var.rancher_admin_https
-  protocol          = "tcp"
-  cidr_blocks       = ["${chomp(data.http.my_current_ip.response_body)}/32"]
+  cidr_blocks       = ["${aws_eip.rancher.public_ip}/32"]
 }
 
 resource "aws_security_group_rule" "outbound_all" {
