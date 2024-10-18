@@ -28,29 +28,29 @@ Builds an environemnt, single node rancher instance and some useful stuff. Manag
 
 - Type the follwoing command to configure credentials and region. You will be prompted for input if this is first time setup.
 
-'''bash
+```bash
 aws configure
 
 AWS Access Key ID: ENTER THE KEY ID
 AWS Secret Access Key: ENTER THE ACCESS KEY
 Default region name: eu-west-2 (for London)
 Default output format: json
-'''
+```
 
 - Create an S3 Bucket using the aws cli. This bucket is for the state file. In this example i've used my domain name sarrionandia.co.uk. Buckets are private by default.
 
-'''bash
+```bash
 aws s3api create-bucket --bucket sarrionandia.co.uk --region eu-west-2
-'''
+```
 
 - Create a secret called *rancher* using the aws cli. Remember to change the values *consolepassword*, *adminpassword* and *rootpassword* .These values will be used to set your passwords during deployment later.
 
-'''bash
+```bash
 aws secretsmanager create-secret \
     --name rancher \
     --description "Rancher secrets" \
     --secret-string "{\"admin\":\"adminpassword\",\"root\":"\rootpassword\",\"bootstrap\":\"bootstrappassword\"}"
-'''
+```
 
 Secrets are region specific. If you have set the region above with 'aws configure' that's where it will reside.
 
@@ -60,14 +60,14 @@ Grab the secret ARN and stash it for later.
 
 - Create an Instnace Key Pair and remember take note of the name. You will need to set this in the variables beflow.
 
-'''bash
+```bash
 aws ec2 create-key-pair \
     --key-name sarrionandia-eu-w2 \
     --key-type rsa \
     --key-format pem \
     --query "KeyMaterial" \
     --output text > ~/.ssh/sarrionandia-eu-w2.pem
-'''
+```
 
 - Change the following variable values in 
 
@@ -143,8 +143,8 @@ This componenet installs and configures
 
 In the componenet order: rancher-infra, rancer-bootstrap then rancher-config perform;
 
-'''bash
+```bash
 terraform apply
-''' 
+``` 
 
    
