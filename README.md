@@ -6,17 +6,17 @@ Builds an environemnt, single node rancher instance and some useful stuff. Manag
 
 # Requirements
 
- * [terraform binary] (https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli)
+ * [terraform binary](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli)
 
- * [AWS Account] (https://aws.amazon.com/)
+ * [AWS Account](https://aws.amazon.com/)
 
- * [Route53] (https://aws.amazon.com/route53/) Hosted Zone
+ * [Route53](https://aws.amazon.com/route53/) Hosted Zone
 
- * [s3] (https://aws.amazon.com/s3/) S3 Bucket for state files
+ * [s3](https://aws.amazon.com/s3/) Bucket for state files
 
- * [Secret Manager] (https://aws.amazon.com/secrets-manager/) To store the passw0rdz.txt
+ * [Secret Manager](https://aws.amazon.com/secrets-manager/) To store the passw0rdz.txt
 
- * [t4g] (https://aws.amazon.com/ec2/instance-types/t4/) large instance. 8GB of ram is required for a single node isntance. Anything less results in pod restarts.
+ * [t4g](https://aws.amazon.com/ec2/instance-types/t4/) large instance. 8GB of ram is required for a single node isntance. Anything less results in pod restarts.
 
 ## Setup
 
@@ -123,19 +123,19 @@ You may then proceed to interact with kubernetes using the kubectl command.
 
 This componenet installs and configures
 
- * [aws-ebs-csi-driver] (https://github.com/kubernetes-sigs/aws-ebs-csi-driver)
+ * [aws-ebs-csi-driver](https://github.com/kubernetes-sigs/aws-ebs-csi-driver)
 
     Required for mounting AWS volumnes directly into pods
 
- * [external-dns] (https://github.com/kubernetes-sigs/external-dns)
+ * [external-dns](https://github.com/kubernetes-sigs/external-dns)
 
     Creates DNS entries from kubernetes manfiest annontations
 
- * [cluster issuer] (https://cert-manager.io/docs/configuration/acme/)
+ * [cluster issuer](https://cert-manager.io/docs/configuration/acme/)
 
     Creates a letsencrypt cluster issuer
 
- * [traefik ip-whitelist] (https://doc.traefik.io/traefik/middlewares/http/ipwhitelist/)
+ * [traefik ip-whitelist](https://doc.traefik.io/traefik/middlewares/http/ipwhitelist/)
 
     Manages a traefik IP Whitelist to restrict access to the rancher API
 
