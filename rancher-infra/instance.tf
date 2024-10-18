@@ -38,7 +38,7 @@ data "aws_ami" "ubuntu_arm64" {
 resource "aws_instance" "rancher" {
   availability_zone = var.availability-zone
   ami               = data.aws_ami.amazon_arm64.id
-  instance_type     = "t4g.medium"
+  instance_type     = "t4g.large"
   key_name          = var.instance-key-name
   root_block_device {
     volume_size = "32"
@@ -51,13 +51,13 @@ resource "aws_instance" "rancher" {
   iam_instance_profile = aws_iam_instance_profile.rancher.id
   user_data = templatefile("${path.module}/templates/rancher_boot.sh",
     {
-      bootstrap-password      = jsondecode(data.aws_secretsmanager_secret_version.rancher-current.secret_string)["bootstrap"],
-      acme-domain             = "${var.host-name}.${var.domain-name}",
-      rancher-ip              = local.rancher-ip,
-      cluster-issuer          = var.cluster-issuer,
-      letsencrypt-email       = var.letsencrypt-email,
-      ip-whitelist            = "${chomp(data.http.my_current_ip.response_body)}/32",
-      public-ip               = aws_eip.rancher.public_ip
+      bootstrap-password = jsondecode(data.aws_secretsmanager_secret_version.rancher-current.secret_string)["bootstrap"],
+      acme-domain        = "${var.host-name}.${var.domain-name}",
+      rancher-ip         = local.rancher-ip,
+      cluster-issuer     = var.cluster-issuer,
+      letsencrypt-email  = var.letsencrypt-email,
+      ip-whitelist       = "${chomp(data.http.my_current_ip.response_body)}/32",
+      public-ip          = aws_eip.rancher.public_ip
   })
 
   network_interface {
@@ -92,5 +92,5 @@ resource "aws_eip" "rancher" {
 }
 
 locals {
-  rancher-ip         = cidrhost(var.rancher-subnet-cidr, 10)
+  rancher-ip = cidrhost(var.rancher-subnet-cidr, 10)
 }

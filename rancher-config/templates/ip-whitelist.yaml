@@ -1,0 +1,11 @@
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  namespace: middleware
+  name: rancher-ip-whitelist
+spec:
+  ipWhiteList:
+    sourceRange:
+    %{ for i in ip-whitelist ~}
+    - ${i}
+    %{ endfor ~}

@@ -4,7 +4,7 @@ resource "aws_iam_policy" "rancher_volumes" {
 }
 
 resource "aws_iam_policy" "rancher_external_dns" {
-  name   = "rancher_external_dns_policy"
+  name = "rancher_external_dns_policy"
   policy = templatefile("${path.module}/templates/rancher_external_dns_policy.json", {
     hosted_zone_id = data.aws_route53_zone.rancher.id
   })

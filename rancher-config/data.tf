@@ -3,5 +3,5 @@ data "http" "my_current_ip" {
 }
 
 data "local_file" "kube_config" {
-  filename        = pathexpand("~/.kube/config")
+  filename = pathexpand("~/.kube/config")
 }
