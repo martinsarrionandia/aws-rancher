@@ -92,6 +92,14 @@ aws ec2 create-key-pair \
 
 [rancher-config/remote.tf](rancher-config/remote.tf)
 
+Or just run this
+
+```bash
+export BUCKETNAME=stubbornstains.co.uk
+find . -type f -name 'remote.tf' -or -name 'backend.tf' -exec sed -i 's/sarrionandia.co.uk/$BUCKETNAME/g' {} \;
+```
+
+
  - Because of "reasons" my state bucket is in eu-west-1, but I'm deploying to eu-west-2 Change the bucket region if you have to.
  
  *Note*
