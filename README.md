@@ -96,7 +96,8 @@ Or just run this
 
 ```bash
 export BUCKETNAME=stubbornstains.co.uk
-find . -type f -name 'remote.tf' -or -name 'backend.tf' -exec sed -i 's/sarrionandia.co.uk/$BUCKETNAME/g' {} \;
+
+find . -type f -name 'remote.tf' -or -name 'backend.tf' -exec sed -i '' -e "s/sarrionandia\.co\.uk/$BUCKETNAME/g" {} \;
 ```
 
 
