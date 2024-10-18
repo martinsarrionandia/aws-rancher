@@ -82,12 +82,12 @@ aws ec2 create-key-pair \
 
 - Change the state bucket locations in the following files
 
-(rancher-infra/backend.tf)
-(rancher-bootstrap/backend.tf)
-(rancher-config/backend.tf)
+[a relative link](rancher-infra/backend.tf)
+[a relative link](rancher-bootstrap/backend.tf)
+[a relative link](rancher-config/backend.tf)
 
-(rancher-bootstrap/remote.tf)
-(rancher-config/remote.tf)
+[a relative link](rancher-bootstrap/remote.tf)
+[a relative link](rancher-config/remote.tf)
 
  - Because of "reasons" my state bucket is in eu-west-1, but I'm deploying to eu-west-2 Change the bucket region if you have to.
  
