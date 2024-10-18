@@ -4,7 +4,7 @@
 export LOCAL_IPV4=$(ec2-metadata -o --quiet)
 export PUBLIC_IPV4=$(ec2-metadata -v --quiet)
 
-#sudo apt-get update && sudo apt-get -y upgrade
+# Update DNF
 
 sudo dnf update -y
 
@@ -24,7 +24,7 @@ sudo -i curl -sfLo $K3S_SCRIPT https://get.k3s.io
 sudo -i chmod 755 $K3S_SCRIPT
 sudo -i ./$K3S_SCRIPT  #--node-external-ip="$PUBLIC_IPV4"  --advertise-address="$LOCAL_IPV4"
 
-#Install kubectl
+# Install kubectl
 
 cat > /etc/profile.d/kubeconfig.sh << EOF
 export KUBECONFIG=/etc/rancher/k3s/k3s.yaml

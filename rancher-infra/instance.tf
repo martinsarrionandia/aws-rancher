@@ -10,31 +10,6 @@ data "aws_ami" "amazon_arm64" {
   }
 }
 
-
-data "aws_ami" "ubuntu_x64" {
-  owners      = ["099720109477"]
-  most_recent = true
-  name_regex  = "ubuntu/images/hvm-ssd/ubuntu-jammy-22.04"
-
-  filter {
-    name   = "architecture"
-    values = ["x86_64"]
-
-  }
-}
-
-data "aws_ami" "ubuntu_arm64" {
-  owners      = ["099720109477"]
-  most_recent = true
-  name_regex  = "ubuntu/images/hvm-ssd/ubuntu-jammy-22.04"
-
-  filter {
-    name   = "architecture"
-    values = ["arm64"]
-
-  }
-}
-
 resource "aws_instance" "rancher" {
   availability_zone = var.availability-zone
   ami               = data.aws_ami.amazon_arm64.id

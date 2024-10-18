@@ -1,8 +1,3 @@
-variable "letsencrypt-email" {
-  type    = string
-  default = "martin@sarrionandia.co.uk"
-}
-
 variable "cluster-issuer" {
   type    = string
   default = "letsencrypt"
@@ -30,11 +25,13 @@ variable "traefik-access-log" {
 }
 
 variable "traefik-external-access-policy" {
-  type    = string
-  default = "Local"
+  description = "Set to Local for middleware IP Whitelist to work"
+  type        = string
+  default     = "Local"
 }
 
 variable "ip-whitelist-additional" {
-  type    = list(any)
-  default = ["10.1.0.1/32"]
+  description = "Additional IP ranges for IP whitelist"
+  type        = list(any)
+  default     = ["10.1.0.1/32"]
 }

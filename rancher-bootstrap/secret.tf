@@ -1,5 +1,5 @@
 data "aws_secretsmanager_secret" "rancher_admin" {
-  arn = "arn:aws:secretsmanager:eu-west-2:281287281094:secret:rancher-QeIi1B"
+  arn = data.terraform_remote_state.rancher-infra.outputs.rancher-secret-arn
 }
 
 data "aws_secretsmanager_secret_version" "rancher_admin_current" {

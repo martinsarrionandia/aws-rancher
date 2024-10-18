@@ -17,3 +17,11 @@ output "rancher-role-arn" {
 output "region" {
   value = var.region
 }
+
+output "letsencrypt-email" {
+  value = var.letsencrypt-email
+}
+
+output "rancher-secret-arn" {
+  value = var.rancher-secret-arn
+}
