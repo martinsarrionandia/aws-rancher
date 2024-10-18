@@ -71,7 +71,7 @@ aws ec2 create-key-pair \
 
 - Change the following variable values in 
 
-(https://github.com/martinsarrionandia/aws-rancher/blob/main/rancher-infra/variables.tf)
+(rancher-infra/variables.tf)
 
  - region
  - availability-zone
@@ -82,13 +82,12 @@ aws ec2 create-key-pair \
 
 - Change the state bucket locations in the following files
 
-(https://github.com/martinsarrionandia/aws-rancher/blob/main/rancher-infra/backend.tf)
-(https://github.com/martinsarrionandia/aws-rancher/blob/main/rancher-bootstrap/backend.tf)
-(https://github.com/martinsarrionandia/aws-rancher/blob/main/rancher-config/backend.tf)
+(rancher-infra/backend.tf)
+(rancher-bootstrap/backend.tf)
+(rancher-config/backend.tf)
 
-(https://github.com/martinsarrionandia/aws-rancher/blob/main/rancher-bootstrap/remote.tf)
-(https://github.com/martinsarrionandia/aws-rancher/blob/main/rancher-config/remote.tf)
-
+(rancher-bootstrap/remote.tf)
+(rancher-config/remote.tf)
 
  - Because of "reasons" my state bucket is in eu-west-1, but I'm deploying to eu-west-2 Change the bucket region if you have to.
  
@@ -125,7 +124,7 @@ This componenet installs and configures
 
  * [aws-ebs-csi-driver](https://github.com/kubernetes-sigs/aws-ebs-csi-driver)
 
-    Required for mounting AWS volumnes directly into pods
+    Required for mounting EBS volumnes directly into pods
 
  * [external-dns](https://github.com/kubernetes-sigs/external-dns)
 
