@@ -97,7 +97,8 @@ Or just run this
 ```bash
 export BUCKETNAME=stubbornstains.co.uk
 
-find . -type f -name 'remote.tf' -or -name 'backend.tf' -exec sed -i '' -e "s/sarrionandia\.co\.uk/$BUCKETNAME/g" {} \;
+find . -type f -name 'remote.tf' -exec sed -i '' -e "s/sarrionandia\.co\.uk/$BUCKETNAME/g" {} \;
+find . -type f -name 'backend.tf' -exec sed -i '' -e "s/sarrionandia\.co\.uk/$BUCKETNAME/g" {} \;
 ```
 
 
@@ -152,10 +153,83 @@ This componenet installs and configures
 
 # Instructions
 
+## Build
+
 In the componenet order: rancher-infra, rancer-bootstrap then rancher-config perform;
 
 ```bash
 terraform apply
 ``` 
 
-   
+## volumnes
+
+After building the rancher server you will want to deploy some apps. To use persistent storage for these apps make sure you tag your volumes.
+
+Make sure you create your volumes with the Tag `rancher=true` in order for the IAM policy to work
+
+## Deployments
+
+Here are some example deployments to get you going...
+
+[matrix](https://github.com/martinsarrionandia/matrix)
+
+[wordpress](https://github.com/martinsarrionandia/mojobooth.co.uk)
+
+## Update IP Whitelist
+
+Due to "reasons" it is not recommended to run rancher on a different port to 443. Restricting access to rancher with a SG is therefore not practical.
+
+Alternatives include using a AWS ELB which is expensive. 
+
+However an basic IP Whitelist can be applied via traefik middleware.
+
+During the deploymenty your laptop public IP is automatically added to the SG for ssh and rancher ip whitelist. If this changes you will be locked out.
+
+To update the ssh SG source reapply terrafrom in rancher-infra componenet. 
+
+Then you can run the [rancher-config/apply-ip-whitelist.sh](rancher-config/apply-ip-whitelist.sh) script
+
+You will need to manually point the private key to your EC2 key pair here [rancher-config/ip-whitelist.tf](rancher-config/ip-whitelist.tf)
+
+## Turn on Traefik Logs
+
+Set the varialbes: *traefik-log-level* to DEBUG and *traefik-access-log* to true
+
+[rancher-config/variables.tf]rancher-config/variables.tf
+
+Apply terrafrom in the rancher-config component
+
+```bash
+terraform apply
+```
+
+Get the logs from the traefik pod
+
+```bash
+kubectl get pods -n kube-system
+
+NAME                                      READY   STATUS      RESTARTS   AGE
+coredns-7b98449c4-cl666                   1/1     Running     0          2d11h
+ebs-csi-controller-86f5545569-bs24x       5/5     Running     0          2d10h
+ebs-csi-controller-86f5545569-tnrkq       5/5     Running     0          2d10h
+ebs-csi-node-45j7l                        3/3     Running     0          2d10h
+helm-install-traefik-52fql                0/1     Completed   0          2d10h
+helm-install-traefik-crd-7pv8r            0/1     Completed   0          2d11h
+local-path-provisioner-6795b5f9d8-9sh7w   1/1     Running     0          2d11h
+metrics-server-cdcc87586-dm4db            1/1     Running     0          2d11h
+svclb-traefik-33578b2c-bbf8n              2/2     Running     0          2d11h
+traefik-fb6486f5-p46dx
+
+kubectl logs --follow traefik-fb6486f5-p46dx -n kube-system
+
+"-" 157071 "websecure-matrix-matrix-matrix-synapse-matrix-sarrionandia-co-uk-matrix@kubernetes" "http://10.42.0.53:8008" 1ms
+185.77.56.38 - - [19/Oct/2024:10:25:33 +0000] "GET /k8s/clusters/local/api/v1/namespaces/kube-system/pods/traefik-fb6486f5-p46dx HTTP/2.0" 200 8606 "-" "-" 157073 "websecure-cattle-system-rancher-rancher-sarrionandia-co-uk@kubernetes" "http://10.42.0.15:80" 4ms
+185.77.56.38 - - [19/Oct/2024:10:25:33 +0000] "GET /k8s/clusters/local/api/v1/namespaces/kube-system/pods/traefik-fb6486f5-p46dx/log?container=traefik HTTP/2.0" 200 8171850 "-" "-" 157074 "websecure-cattle-system-rancher-rancher-sarrionandia-co-uk@kubernetes" "http://10.42.0.13:80" 930ms
+10.42.0.1 - - [19/Oct/2024:10:25:36 +0000] "GET /ping HTTP/1.1" 200 2 "-" "-" 157075 "ping@internal" "-" 0ms
+10.42.0.1 - - [19/Oct/2024:10:25:36 +0000] "GET /ping HTTP/1.1" 200 2 "-" "-" 157076 "ping@internal" "-" 0ms
+185.77.56.38 - - [19/Oct/2024:10:25:41 +0000] "GET /k8s/clusters/local/api/v1/namespaces/kube-system/pods/traefik-fb6486f5-p46dx HTTP/2.0" 200 8606 "-" "-" 157077 "websecure-cattle-system-rancher-rancher-sarrionandia-co-uk@kubernetes" "http://10.42.0.14:80" 4ms
+```
+
+# Useful commands
+
+
