@@ -1,6 +1,6 @@
 # aws-rancher
 
-Builds an environemnt, single node rancher instance and some useful stuff. Manages required IAM policies, basic IP whitelist security, EBS storage drivers, letencrypt, external-dns and kubectl config file.
+Builds an environment, single node rancher instance and some useful stuff. Manages required IAM policies, basic IP whitelist security, EBS storage drivers, letencrypt, external-dns and kubectl config file.
 
 ###
 
@@ -26,7 +26,7 @@ Builds an environemnt, single node rancher instance and some useful stuff. Manag
 
 - Download and stash the Key ID and Access Key
 
-- Type the follwoing command to configure credentials and region. You will be prompted for input if this is first time setup.
+- Type the following command to configure credentials and region. You will be prompted for input if this is a first time setup.
 
 ```bash
 aws configure
@@ -37,7 +37,7 @@ Default region name: eu-west-2 (for London)
 Default output format: json
 ```
 
-- Create an S3 Bucket using the aws cli. This bucket is for the state file. In this example i've used my domain name sarrionandia.co.uk. Buckets are private by default.
+- Create an S3 Bucket using the aws cli. This bucket is for the state file. In this example, I have used my domain name sarrionandia.co.uk. Buckets are private by default.
 
 ```bash
 aws s3api create-bucket --bucket sarrionandia.co.uk --region eu-west-2
@@ -56,9 +56,9 @@ Secrets are region specific. If you have set the region above with 'aws configur
 
 Grab the secret ARN and stash it for later.
 
-- Create a route53 zone for the domain where you will host rancher. In this example I have already created *sarrionandia.co.uk*
+- Create a route53 zone for the domain where you will host rancher. In this example, I have already created *sarrionandia.co.uk*
 
-- Create an Instnace Key Pair and remember take note of the name. You will need to set this in the variables beflow.
+- Create an Instnace Key Pair and take note of the name. You will need to set this in the variables below.
 
 ```bash
 aws ec2 create-key-pair \
@@ -106,7 +106,7 @@ find . -type f -name 'backend.tf' -exec sed -i '' -e "s/sarrionandia\.co\.uk/$BU
  
  *Note*
 
-  It's best not to manage any secret data with terraform as the contents are stored in an S3 bucket. Even if it's encrypted. As we are not storing nuclear launch codes we will make an exception due to lazyness. 
+  It's best not to manage any secret data with terraform as the contents are stored in an S3 bucket. Even if it's encrypted. As we are not storing nuclear launch codes, we will make an exception due to laziness. 
 
 # Components
 
@@ -123,11 +123,11 @@ Creates everything you need to host the rancher software.
  * Initial IP Whitelist
  * IAM Policies
 
-The rancher installation will be performed by the cloud-init user daata bootsrap shell script
+The rancher installation will be performed by the cloud-init user data bootsrap shell script
 
 ## rancher-bootstrap
 
-This componenet will "bootstrap" the rancher serve and set the admin password. Once complete it will generate a local [kubectl config file] (https://kubernetes.io/docs/concepts/configuration/organize-cluster-access-kubeconfig/)
+This componenet will "bootstrap" the rancher serve and set the admin password. Once complete, it will generate a local [kubectl config file] (https://kubernetes.io/docs/concepts/configuration/organize-cluster-access-kubeconfig/)
 
 You may then proceed to interact with kubernetes using the kubectl command.
 
@@ -155,7 +155,7 @@ This componenet installs and configures
 
 ## Build
 
-In the componenet order: rancher-infra, rancer-bootstrap then rancher-config perform;
+In the component order: rancher-infra, rancer-bootstrap then rancher-config perform;
 
 ```bash
 terraform apply
@@ -163,9 +163,9 @@ terraform apply
 
 ## volumnes
 
-After building the rancher server you will want to deploy some apps. To use persistent storage for these apps make sure you tag your volumes.
+After building the rancher server, you will want to deploy some apps. To use persistent storage for these apps, make sure you tag your volumes.
 
-Make sure you create your volumes with the Tag `rancher=true` in order for the IAM policy to work
+Tag `rancher=true` in order for the IAM policy to work
 
 ## Deployments
 
@@ -177,11 +177,11 @@ Here are some example deployments to get you going...
 
 ## Update IP Whitelist
 
-Due to "reasons" it is not recommended to run rancher on a different port to 443. Restricting access to rancher with a SG is therefore not practical.
+Due to "reasons" it is not recommended to run rancher on a different port to 443. Restricting access to rancher with an SG is therefore not practical.
 
-Alternatives include using a AWS ELB which is expensive. 
+Alternatives include using a AWS ELB which is expensive.
 
-However an basic IP Whitelist can be applied via traefik middleware.
+However, a basic IP Whitelist can be applied via traefik middleware.
 
 During the deploymenty your laptop public IP is automatically added to the SG for ssh and rancher ip whitelist. If this changes you will be locked out.
 
@@ -195,14 +195,13 @@ You will need to manually point the private key to your EC2 key pair here [ranch
 
 Set the varialbes: *traefik-log-level* to DEBUG and *traefik-access-log* to true
 
-[rancher-config/variables.tf]rancher-config/variables.tf
+[rancher-config/variables.tf](rancher-config/variables.tf)
 
 Apply terrafrom in the rancher-config component
 
 ```bash
 terraform apply
 ```
-
 Get the logs from the traefik pod
 
 ```bash
