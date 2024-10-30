@@ -161,7 +161,7 @@ In the component order: rancher-infra, rancer-bootstrap then rancher-config perf
 terraform apply
 ``` 
 
-## volumnes
+## Persistent Volumes
 
 After building the rancher server, you will want to deploy some apps. To use persistent storage for these apps, make sure you tag your volumes.
 

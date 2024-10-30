@@ -1,18 +1,6 @@
-data "aws_ami" "amazon_arm64" {
-  owners      = ["137112412989"]
-  most_recent = true
-  name_regex  = "al2023-ami"
-
-  filter {
-    name   = "architecture"
-    values = ["arm64"]
-
-  }
-}
-
 resource "aws_instance" "rancher" {
   availability_zone = var.availability-zone
-  ami               = data.aws_ami.amazon_arm64.id
+  ami               = data.aws_ami.centos9_arm64.id
   instance_type     = "t4g.large"
   key_name          = var.instance-key-name
   root_block_device {
@@ -21,6 +9,11 @@ resource "aws_instance" "rancher" {
       Name    = local.fqdn
       Rancher = "True"
     }
+  }
+
+  metadata_options {
+    http_tokens = "required"
+    http_put_response_hop_limit = "2"
   }
 
   iam_instance_profile = aws_iam_instance_profile.rancher.id
@@ -60,7 +53,6 @@ resource "aws_network_interface" "rancher" {
     Name = "Rancher"
   }
 }
-
 
 resource "aws_eip" "rancher" {
   network_interface = aws_network_interface.rancher.id

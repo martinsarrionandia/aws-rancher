@@ -5,7 +5,7 @@ resource "null_resource" "ip-whitelist" {
 
   connection {
     type        = "ssh"
-    user        = "ec2-user"
+    user        = "ubuntu"
     private_key = file("/Users/martin/.ssh/sarrionandia-eu-w2.pem")
     host        = data.terraform_remote_state.rancher-infra.outputs.fqdn
     agent       = false

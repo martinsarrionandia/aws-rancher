@@ -8,5 +8,4 @@ provider "helm" {
 # Kubernetes Provider
 provider "kubernetes" {
   config_path = data.local_file.kube_config.filename
-  #insecure    = true
 }
