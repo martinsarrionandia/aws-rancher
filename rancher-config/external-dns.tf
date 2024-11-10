@@ -28,4 +28,17 @@ resource "helm_release" "external-dns-aws" {
     name  = "aws.roleArn"
     value = data.terraform_remote_state.rancher-infra.outputs.rancher-role-arn
   }
+
+  values = [yamlencode(local.external-dns-resource-limits)]
+
+}
+
+locals {
+  external-dns-resource-limits = {
+    resources = {
+      requests = {
+        cpu = "50m"
+      }
+    }
+  }
 }

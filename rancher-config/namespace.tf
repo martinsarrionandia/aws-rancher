@@ -3,3 +3,9 @@ resource "kubernetes_namespace" "external-dns-aws" {
     name = "extertnal-dns-aws"
   }
 }
+
+resource "kubernetes_namespace" "crowdsec" {
+  metadata {
+    name = "crowdsec"
+  }
+}

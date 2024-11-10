@@ -14,3 +14,11 @@ spec:
     service:
       spec:
         externalTrafficPolicy: "${traefik-external-access-policy}"
+    experimental:
+      plugins:
+        rewrite-body:
+          moduleName: "github.com/packruler/rewrite-body"
+          version: "v1.2.0"
+      crowdsec-bouncer-traefik-plugin:
+        moduleName: "github.com/maxlerebourg/crowdsec-bouncer-traefik-plugin"
+        version: "v1.3.5"

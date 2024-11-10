@@ -13,6 +13,11 @@ variable "external-dns-name" {
   default = "external-dns"
 }
 
+variable "crowdsec-name" {
+  type    = string
+  default = "crowdsec"
+}
+
 variable "traefik-log-level" {
   type    = string
   default = "INFO"

@@ -25,3 +25,11 @@ output "letsencrypt-email" {
 output "rancher-secret-arn" {
   value = var.rancher-secret-arn
 }
+
+output "s3-prefix-list-id" {
+  value = aws_vpc_endpoint.s3.prefix_list_id
+}
+
+output "s3-whitelist" {
+  value = local.ip_range
+}
