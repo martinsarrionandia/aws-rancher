@@ -33,6 +33,6 @@ data "aws_ami" "centos9_arm64" {
   }
 }
 
-data "http" "aws_ip_ranges"{
+data "http" "aws_ip_ranges" {
   url = "https://ip-ranges.amazonaws.com/ip-ranges.json"
 }
