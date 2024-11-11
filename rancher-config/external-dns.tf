@@ -37,7 +37,7 @@ locals {
   external-dns-resource-limits = {
     resources = {
       requests = {
-        cpu = "50m"
+        cpu = "25m"
       }
     }
   }
