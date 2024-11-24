@@ -36,6 +36,13 @@ EOF
 
 sysctl -p "$KERNEL_PARAM_FILE"
 
+# Set log labels
+
+#semanage fcontext -a -t container_file_t -r s0 /var/log
+semanage fcontext -a -t container_file_t -r s0 /var/log/containers
+semanage fcontext -a -t container_file_t -r s0 /var/log/pods
+restorecon -R /var/log
+
 # Install POD Security Admission policy
 
 export KUBELET_PSA_DIR="/var/lib/rancher/k3s/server"
@@ -213,8 +220,8 @@ helm install rancher rancher-stable/rancher \
   --set ingress.tls.source=letsEncrypt
 
 # set selinux label for /var/log to be readable by all containers. This is required for Crowdsec
-# chcon -R system_u:object_r:container_file_t:s0 /var/log
 
-semanage fcontext -a -t container_file_t -r s0 /var/log
+chcon -R system_u:object_r:container_file_t:s0 /var/log/
+
 
 # kubectl patch svc traefik -p '{"spec":{"externalTrafficPolicy":"Local"}}' -n kube-system
