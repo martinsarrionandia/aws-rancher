@@ -24,7 +24,7 @@ resource "aws_instance" "rancher" {
       rancher-ip         = local.rancher-ip,
       cluster-issuer     = var.cluster-issuer,
       letsencrypt-email  = var.letsencrypt-email,
-      ip-whitelist       = "${chomp(data.http.my_current_ip.response_body)}/32",
+      ip-allowlist       = "${chomp(data.http.my_current_ip.response_body)}/32",
       public-ip          = aws_eip.rancher.public_ip
   })
 

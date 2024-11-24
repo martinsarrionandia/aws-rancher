@@ -8,7 +8,7 @@ resource "kubernetes_manifest" "certmanager-letsencrypt" {
 
 locals {
 
-letsencrypt-cluster-issuer =<<EOF
+  letsencrypt-cluster-issuer = <<EOF
 apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
 metadata:

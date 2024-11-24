@@ -15,6 +15,11 @@ resource "helm_release" "external-dns-aws" {
   }
 
   set {
+    name  = "crd.create"
+    value = "true"
+  }
+
+  set {
     name  = "provider"
     value = "aws"
   }

@@ -18,6 +18,11 @@ variable "crowdsec-name" {
   default = "crowdsec"
 }
 
+variable "crowdsec-namespace" {
+  type    = string
+  default = "crowdsec"
+}
+
 variable "traefik-log-level" {
   type    = string
   default = "INFO"

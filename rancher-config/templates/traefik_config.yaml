@@ -3,9 +3,12 @@ apiVersion: helm.cattle.io/v1
 kind: HelmChartConfig
 metadata:
   name: traefik
-  namespace: kube-system
+  namespace: traefik
 spec:
   valuesContent: |-
+    providers:
+      kubernetesCRD:
+        enabled: true
     logs:
       general:
         level: "${traefik-log-level}"

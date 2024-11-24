@@ -1,28 +1,28 @@
 resource "helm_release" "crowdsec" {
-  namespace  = "kube-system"
+  namespace  = var.crowdsec-namespace
   name       = var.crowdsec-name
   repository = "https://crowdsecurity.github.io/helm-charts"
   chart      = "crowdsec"
   values     = [local.crowdsec-helm-values]
 
   set {
-    name = "agent.resources.limits.memory"
-    value = "250Mi"	
+    name  = "agent.resources.limits.memory"
+    value = "250Mi"
   }
 
   set {
-    name = "agent.resources.limits.cpu"
+    name  = "agent.resources.limits.cpu"
     value = "500m"
   }
 
   set {
-    name = "agent.resources.requests.cpu"
-    value = "50m"	
+    name  = "agent.resources.requests.cpu"
+    value = "50m"
   }
 
   set {
-    name = "agent.resources.requests.memory"
-    value = "250Mi"	
+    name  = "agent.resources.requests.memory"
+    value = "250Mi"
   }
 }
 
@@ -32,21 +32,27 @@ resource "kubernetes_manifest" "crowdsec-middlewarre" {
 
 locals {
 
-crowdsec-middleware-config = <<EOF
+  crowdsec-middleware-config = <<EOF
 apiVersion: traefik.io/v1alpha1
-#apiVersion: traefik.containo.us/v1alpha1
 kind: Middleware
 metadata:
-    name: crowdsec-bouncer-traefik-plugin
-    namespace: middleware
+  name: bouncer
+  namespace: traefik
 spec:
-    plugin:
-        crowdsec-bouncer-traefik-plugin:
-            CrowdsecLapiKey: "${jsondecode(data.aws_secretsmanager_secret_version.rancher-current.secret_string)["bouncer-key-traefik"]}"
-            Enabled: "true"
+  plugin:
+    bouncer:
+      enabled: true
+      crowdsecMode: stream
+      lapi: enabled
+      crowdsecLapiScheme: https
+      crowdsecLapiHost: ${var.crowdsec-name}-service.${var.crowdsec-namespace}:8080
+      CrowdsecLapiKey: "${jsondecode(data.aws_secretsmanager_secret_version.rancher-current.secret_string)["bouncer-key-traefik"]}"
+      crowdsecAppsecEnabled: true
+      logLevel: DEBUG
+
 EOF
 
-crowdsec-helm-values = <<EOF
+  crowdsec-helm-values = <<EOF
 # for raw logs format: json or cri (docker|containerd)
 container_runtime: containerd
 agent:
@@ -62,6 +68,11 @@ agent:
     - name: COLLECTIONS
       value: "crowdsecurity/traefik"
 lapi:
+  dashboard:
+    enabled: false
+    image:
+      repository: apollof/crowdsec_metabase
+      tag: latest
   env:
     # To enroll the Security Engine to the console
     - name: ENROLL_KEY
@@ -79,6 +90,9 @@ lapi:
     requests:
       cpu: 50m
       memory: 250Mi
+appsec:
+  enable: true
+
 
 EOF
 
