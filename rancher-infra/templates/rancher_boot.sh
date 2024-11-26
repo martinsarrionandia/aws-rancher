@@ -190,7 +190,7 @@ helm install traefik traefik/traefik \
   --set providers.kubernetesCRD.enabled=true \
   --set securityContext.seccompProfile.type=RuntimeDefault \
   --set-json service.spec='{"externalTrafficPolicy":"Local"}' \
-  --values traefik-plugins.yaml.yaml
+  --values traefik-plugins.yaml
 
 # Install Cert Manager
 
