@@ -170,14 +170,27 @@ EOF
 
 kubectl apply -f /root/traefik-pvc.yaml
 
-helm install --replace traefik traefik/traefik \
+
+cat > /root/traefik-plugins.yaml << EOF
+experimental:
+  plugins:
+    rewrite-body:
+      moduleName: "github.com/packruler/rewrite-body"
+      version: "v1.2.0"
+    crowdsec-bouncer-traefik-plugin:
+      moduleName: "github.com/maxlerebourg/crowdsec-bouncer-traefik-plugin"
+      version: "v1.3.5"
+EOF
+
+helm install traefik traefik/traefik \
+  --version 33.1.0-rc1 \
   --namespace traefik \
   --set-json deployment.additionalVolumes='[{"name": "plugins","persistentVolumeClaim": {"claimName": "traefik-plugins"}}]' \
   --set-json additionalVolumeMounts='[{"name": "plugins","mountPath": "/plugins-storage"}]' \
   --set providers.kubernetesCRD.enabled=true \
   --set securityContext.seccompProfile.type=RuntimeDefault \
-  --set-json service.spec='{"externalTrafficPolicy":"Local"}'
-
+  --set-json service.spec='{"externalTrafficPolicy":"Local"}' \
+  --values traefik-plugins.yaml.yaml
 
 # Install Cert Manager
 
