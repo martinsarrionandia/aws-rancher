@@ -30,7 +30,7 @@ variable "domain-name" {
 variable "host-name" {
   description = "Hostname of the rancher server"
   type        = string
-  default     = "rancher"
+  default     = "ranch-hand"
 }
 
 variable "letsencrypt-email" {

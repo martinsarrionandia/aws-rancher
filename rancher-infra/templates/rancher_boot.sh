@@ -36,8 +36,7 @@ EOF
 
 sysctl -p "$KERNEL_PARAM_FILE"
 
-# Set log labels
-
+# set selinux label for /var/log to be readable by all containers. This is required for Crowdsec
 #semanage fcontext -a -t container_file_t -r s0 /var/log
 semanage fcontext -a -t container_file_t -r s0 /var/log/containers
 semanage fcontext -a -t container_file_t -r s0 /var/log/pods
@@ -93,7 +92,6 @@ done
 echo "K3S Running"
 sleep 10
 
-
 # Install kubectl
 
 cat > /etc/profile.d/kubeconfig.sh << EOF
@@ -117,74 +115,19 @@ helm repo update
 
 # Install Traefik v3
 
-export TRAEFIK_PLUGINS_PATH=/mnt/traefik-plugins
-mkdir $TRAEFIK_PLUGINS_PATH
-chown 65532:65532 $TRAEFIK_PLUGINS_PATH
-chmod 700 $TRAEFIK_PLUGINS_PATH
-semanage fcontext -a -t container_file_t -r s0 $TRAEFIK_PLUGINS_PATH
-
 kubectl create namespace traefik
 
-cat > /root/traefik-volume.yaml << EOF
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: traefik-plugins
-spec:
-  capacity:
-    storage: 1Gi
-  volumeMode: Filesystem
-  accessModes:
-  - ReadWriteOnce
-  persistentVolumeReclaimPolicy: Delete
-  storageClassName: local-path
-  local:
-    path: $TRAEFIK_PLUGINS_PATH
-  nodeAffinity:
-    required:
-      nodeSelectorTerms:
-      - matchExpressions:
-        - key: kubernetes.io/hostname
-          operator: In
-          values:
-          - "${acme-domain}"
-EOF
-
-kubectl apply -f /root/traefik-volume.yaml
-
-cat > /root/traefik-pvc.yaml << EOF
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  namespace: traefik
-  name: traefik-plugins
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 1Gi
-  storageClassName: local-path
-  volumeName: traefik-plugins
-EOF
-
-kubectl apply -f /root/traefik-pvc.yaml
-
-helm install --replace traefik traefik/traefik \
+helm install traefik traefik/traefik \
+  --version 33.1.0-rc1 \
   --namespace traefik \
-  --set-json deployment.additionalVolumes='[{"name": "plugins","persistentVolumeClaim": {"claimName": "traefik-plugins"}}]' \
-  --set-json additionalVolumeMounts='[{"name": "plugins","mountPath": "/plugins-storage"}]' \
-  --set providers.kubernetesCRD.enabled=true \
   --set securityContext.seccompProfile.type=RuntimeDefault \
   --set-json service.spec='{"externalTrafficPolicy":"Local"}'
-
 
 # Install Cert Manager
 
 kubectl create namespace cert-manager
 
 helm install cert-manager jetstack/cert-manager --namespace cert-manager --set crds.enabled=true
-
 
 # Create IP Whitelist for rancher/API access
 
@@ -219,9 +162,8 @@ helm install rancher rancher-stable/rancher \
   --set ingress.extraAnnotations."traefik\.ingress\.kubernetes\.io\/router\.middlewares"="middleware-rancher-ip-allowlist@kubernetescrd" \
   --set ingress.tls.source=letsEncrypt
 
-# set selinux label for /var/log to be readable by all containers. This is required for Crowdsec
 
-chcon -R system_u:object_r:container_file_t:s0 /var/log/
+# chcon -R system_u:object_r:container_file_t:s0 /var/log/
 
 
 # kubectl patch svc traefik -p '{"spec":{"externalTrafficPolicy":"Local"}}' -n kube-system

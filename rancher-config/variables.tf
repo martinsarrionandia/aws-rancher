@@ -35,7 +35,7 @@ variable "traefik-log-level" {
 }
 
 variable "traefik-access-log" {
-  type    = string
+  type    = bool
   default = "true"
 }
 
