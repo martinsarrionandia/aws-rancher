@@ -33,6 +33,17 @@ data "aws_ami" "centos9_arm64" {
   }
 }
 
+data "aws_ami" "centos9_amd64" {
+  owners      = ["125523088429"]
+  most_recent = true
+  name_regex  = "CentOS Stream 9"
+
+  filter {
+    name   = "architecture"
+    values = ["x86_64"]
+  }
+}
+
 data "http" "aws_ip_ranges" {
   url = "https://ip-ranges.amazonaws.com/ip-ranges.json"
 }

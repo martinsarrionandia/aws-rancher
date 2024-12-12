@@ -36,19 +36,19 @@ locals {
 apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
-  name: bouncer
-  namespace: traefik
+  name: ${var.bouncer}
+  namespace: ${var.traefik-namespace}
 spec:
   plugin:
-    bouncer:
+    ${var.bouncer}:
       enabled: true
       crowdsecMode: stream
       lapi: enabled
-      crowdsecLapiScheme: https
+      crowdsecLapiScheme: http
       crowdsecLapiHost: ${var.crowdsec-name}-service.${var.crowdsec-namespace}:8080
       CrowdsecLapiKey: "${jsondecode(data.aws_secretsmanager_secret_version.rancher-current.secret_string)["bouncer-key-traefik"]}"
-      crowdsecAppsecEnabled: true
-      logLevel: DEBUG
+      crowdsecAppsecEnabled: false
+      logLevel: ${var.traefik-log-level}
 
 EOF
 
@@ -59,7 +59,7 @@ agent:
   # Specify each pod whose logs you want to process
   acquisition:
     # The namespace where the pod is located
-    - namespace: traefik
+    - namespace: "${var.traefik-namespace}"
       # The pod name
       podName: traefik-*
       # as in crowdsec configuration, we need to specify the program name to find a matching parser
@@ -93,7 +93,5 @@ lapi:
 appsec:
   enable: true
 
-
 EOF
-
 }

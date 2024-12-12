@@ -1,9 +1,9 @@
 resource "helm_release" "traefik" {
-  namespace  = "traefik"
+  namespace  = var.traefik-namespace
   name       = "traefik"
   repository = "https://traefik.github.io/charts"
   chart      = "traefik"
-  version    = "33.1.0-rc1"
+  version    = "33.1.0"
   values     = [local.traefik-helm-manifest]
   replace    = true
   force_update = true
@@ -22,7 +22,7 @@ additionalVolumeMounts:
   mountPath: /plugins-storage
 securityContext:
   seccompProfile:
-    type: RuntimeDefault
+    type: RuntimeDefault 
 providers:
   kubernetesCRD:
     enabled: true
@@ -39,8 +39,11 @@ experimental:
     rewrite-body:
       moduleName: "github.com/packruler/rewrite-body"
       version: "v1.2.0"
-    crowdsec-bouncer-traefik-plugin:
+    ${var.bouncer}:
       moduleName: "github.com/maxlerebourg/crowdsec-bouncer-traefik-plugin"
       version: "v1.3.5"
+ingressRoute:
+  dashboard:
+    enabled: true
 EOF
 }

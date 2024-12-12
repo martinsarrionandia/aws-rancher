@@ -38,9 +38,11 @@ sysctl -p "$KERNEL_PARAM_FILE"
 
 # set selinux label for /var/log to be readable by all containers. This is required for Crowdsec
 #semanage fcontext -a -t container_file_t -r s0 /var/log
-semanage fcontext -a -t container_file_t -r s0 /var/log/containers
-semanage fcontext -a -t container_file_t -r s0 /var/log/pods
-restorecon -R /var/log
+#semanage fcontext -a -t container_file_t -r s0 /var/log/containers
+#semanage fcontext -a -t container_file_t -r s0 /var/log/pods
+#restorecon -R /var/log
+
+
 
 # Install POD Security Admission policy
 
@@ -118,7 +120,7 @@ helm repo update
 kubectl create namespace traefik
 
 helm install traefik traefik/traefik \
-  --version 33.1.0-rc1 \
+  --version 33.1.0 \
   --namespace traefik \
   --set securityContext.seccompProfile.type=RuntimeDefault \
   --set-json service.spec='{"externalTrafficPolicy":"Local"}'
@@ -163,7 +165,9 @@ helm install rancher rancher-stable/rancher \
   --set ingress.tls.source=letsEncrypt
 
 
-# chcon -R system_u:object_r:container_file_t:s0 /var/log/
 
+chcon system_u:object_r:container_file_t:s0 /var/log
+chcon -R system_u:object_r:container_file_t:s0 /var/log/containers
+chcon -R system_u:object_r:container_file_t:s0 /var/log/pods
 
 # kubectl patch svc traefik -p '{"spec":{"externalTrafficPolicy":"Local"}}' -n kube-system

@@ -23,6 +23,16 @@ variable "crowdsec-namespace" {
   default = "crowdsec"
 }
 
+variable "bouncer" {
+  type    = string
+  default = "bouncer"
+}
+
+variable "traefik-namespace" {
+  type    = string
+  default = "traefik"
+}
+
 variable "crowdsec-privileged" {
   type    = bool
   default = "true"
@@ -30,8 +40,8 @@ variable "crowdsec-privileged" {
 
 variable "traefik-log-level" {
   type    = string
-  default = "INFO"
-  #default = "DEBUG"
+  #default = "INFO"
+  default = "DEBUG"
 }
 
 variable "traefik-access-log" {
