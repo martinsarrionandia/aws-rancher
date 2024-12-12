@@ -1,12 +1,12 @@
 resource "helm_release" "traefik" {
-  namespace  = var.traefik-namespace
-  name       = "traefik"
-  repository = "https://traefik.github.io/charts"
-  chart      = "traefik"
-  version    = "33.1.0"
-  values     = [local.traefik-helm-manifest]
-  replace    = true
-  force_update = true
+  namespace       = var.traefik-namespace
+  name            = "traefik"
+  repository      = "https://traefik.github.io/charts"
+  chart           = "traefik"
+  version         = "33.1.0"
+  values          = [local.traefik-helm-manifest]
+  replace         = true
+  force_update    = true
   upgrade_install = true
 }
 

@@ -39,7 +39,7 @@ variable "crowdsec-privileged" {
 }
 
 variable "traefik-log-level" {
-  type    = string
+  type = string
   #default = "INFO"
   default = "DEBUG"
 }
@@ -53,4 +53,10 @@ variable "traefik-external-access-policy" {
   description = "Set to Local for middleware IP Whitelist to work"
   type        = string
   default     = "Local"
+}
+
+variable "ip-allowlist-additional" {
+  description = "Additional IP ranges for IP allowlist"
+  type        = list(any)
+  default     = ["185.77.56.0/24"]
 }
