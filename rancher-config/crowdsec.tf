@@ -49,7 +49,10 @@ spec:
       CrowdsecLapiKey: "${jsondecode(data.aws_secretsmanager_secret_version.rancher-current.secret_string)["bouncer-key-traefik"]}"
       crowdsecAppsecEnabled: false
       logLevel: ${var.traefik-log-level}
-
+      clientTrustedips:
+      %{for ip in local.ip-allowlist}
+        - ${ip}
+      %{endfor}
 EOF
 
   crowdsec-helm-values = <<EOF
