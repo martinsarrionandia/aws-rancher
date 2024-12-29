@@ -5,3 +5,6 @@ output "api-url" {
 output "fqdn" {
   value = local.fqdn
 }
+
+
+
