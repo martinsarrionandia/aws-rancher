@@ -1,35 +1,33 @@
 #!/bin/bash
 
 # Set hostname
-sudo hostnamectl set-hostname "${acme-domain}"
+
+hostnamectl set-hostname "${acme-domain}"
 
 # Add local bin to path
 
 cat > /etc/profile.d/localpath.sh << EOF
 export export PATH=/usr/local/bin:$PATH
 EOF
-
 chmod 644 /etc/profile.d/localpath.sh
 
 # Update DNF
 
-sudo dnf update -y
-
-# Enable EPEL
-
-sudo dnf -y config-manager --set-enabled crb
-sudo dnf -y install epel-release epel-next-release
+dnf update -y
 
 # Install Tools
 
-sudo dnf install -y net-tools iotop nc iptables git policycoreutils-python-utils amazon-ec2-utils
+dnf install -y net-tools iotop nc iptables git policycoreutils-python-utils awscli
 
-#ENV
-export LOCAL_IPV4=$(ec2-metadata -o --quiet)
-export PUBLIC_IPV4=$(ec2-metadata -v --quiet)
+# Fetch IP address use aws cli
+
+export INSTANCE_ID=$(cat /var/lib/cloud/data/instance-id)
+
+export LOCAL_IPV4=$(aws ec2 describe-network-interfaces --filters "Name=attachment.instance-id,Values=$INSTANCE_ID" --query NetworkInterfaces[0].PrivateIpAddress --output text)
+export PUBLIC_IPV4=$(aws ec2 describe-network-interfaces --filters "Name=attachment.instance-id,Values=$INSTANCE_ID" --query NetworkInterfaces[0].Association.[PublicIp] --output text)
 
 
-# Kernel settings
+# Kernel security settings
 
 export KERNEL_PARAM_FILE=/etc/sysctl.d/90-kubelet.conf
 
@@ -41,14 +39,6 @@ kernel.panic_on_oops=1
 EOF
 
 sysctl -p "$KERNEL_PARAM_FILE"
-
-# set selinux label for /var/log to be readable by all containers. This is required for Crowdsec
-#semanage fcontext -a -t container_file_t -r s0 /var/log
-#semanage fcontext -a -t container_file_t -r s0 /var/log/containers
-#semanage fcontext -a -t container_file_t -r s0 /var/log/pods
-#restorecon -R /var/log
-
-
 
 # Install POD Security Admission policy
 
@@ -83,9 +73,9 @@ EOF
 
 export K3S_SCRIPT="k3s.sh"
 
-sudo -i curl -sfLo $K3S_SCRIPT https://get.k3s.io
-sudo -i chmod 755 $K3S_SCRIPT
-sudo -i ./$K3S_SCRIPT  --protect-kernel-defaults --selinux \
+curl -sfLo $K3S_SCRIPT https://get.k3s.io
+chmod 755 $K3S_SCRIPT
+./$K3S_SCRIPT  --protect-kernel-defaults --selinux \
                        --kube-apiserver-arg="admission-control-config-file=$KUBELET_PSA_PATH" \
                        --disable traefik
 #--node-external-ip="$PUBLIC_IPV4"  
@@ -100,7 +90,7 @@ done
 echo "K3S Running"
 sleep 10
 
-# Install kubectl
+# Install KUBECONFIG profile setting
 
 cat > /etc/profile.d/kubeconfig.sh << EOF
 export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
@@ -126,7 +116,6 @@ helm repo update
 kubectl create namespace traefik
 
 helm install traefik traefik/traefik \
-  --version 33.1.0 \
   --namespace traefik \
   --set securityContext.seccompProfile.type=RuntimeDefault \
   --set-json service.spec='{"externalTrafficPolicy":"Local"}'
@@ -137,7 +126,7 @@ kubectl create namespace cert-manager
 
 helm install cert-manager jetstack/cert-manager --namespace cert-manager --set crds.enabled=true
 
-# Create IP Whitelist for rancher/API access
+# Create IP Allowlist for rancher API access
 
 kubectl create namespace middleware
 
@@ -157,7 +146,7 @@ EOF
 
 kubectl apply -f $ALLOWLIST
 
-#Intall Rancher
+# Intall Rancher
 
 kubectl create namespace cattle-system
 
@@ -170,7 +159,12 @@ helm install rancher rancher-stable/rancher \
   --set ingress.extraAnnotations."traefik\.ingress\.kubernetes\.io\/router\.middlewares"="middleware-rancher-ip-allowlist@kubernetescrd" \
   --set ingress.tls.source=letsEncrypt
 
+# set selinux labels for /var/log to be readable by all containers. This is required for Crowdsec
 
+#semanage fcontext -a -t container_file_t -r s0 /var/log
+#semanage fcontext -a -t container_file_t -r s0 /var/log/containers
+#semanage fcontext -a -t container_file_t -r s0 /var/log/pods
+#restorecon -R /var/log
 
 chcon system_u:object_r:container_file_t:s0 /var/log
 chcon -R system_u:object_r:container_file_t:s0 /var/log/containers
