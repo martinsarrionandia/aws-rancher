@@ -5,7 +5,7 @@ resource "aws_instance" "this" {
   key_name          = var.instance-key-name
   root_block_device {
     volume_size = var.volume-size
-    encrypted = true
+    encrypted   = true
     tags = {
       Name    = local.fqdn
       Rancher = "True"

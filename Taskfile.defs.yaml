@@ -1,0 +1,103 @@
+version: 3
+
+silent: true
+
+env:
+  AWS_REGION: "{{.AWS_REGION}}"
+
+  TF_VAR_workspace_aws_role_arn: '{{.AWS_ROLE_ARN}}'
+  TF_VAR_workspace_aws_config_file: '{{.AWS_CONFIG_FILE}}'
+
+  TF_CLI_ARGS_init: >-
+    -backend-config="region={{.AWS_REGION}}"
+    -backend-config="bucket=tf-state.sarrionandia.co.uk"
+    -backend-config="key="{{.PROJECT_NAME}}/{{.WORKSPACE}}/terraform.tfstate""
+  TF_CLI_ARGS_apply:
+
+tasks:
+  check-port-ready:
+    desc: Check if cluster is ready for bootstrap
+    cmds:
+      - |
+        echo "Waiting for port ready..."
+        export FQDN=$(terraform output -raw fqdn)
+        while !  nc -z "$FQDN" 443 > /dev/null 2>&1; do   
+        sleep 0.5; 
+        done
+    silent: true
+
+  check-cluster-ready:
+    desc: Check if cluster is ready
+    cmds:
+      - |
+        echo "Waiting for cluster ready"
+        while ! kubectl cluster-info > /dev/null 2>&1; do   
+        sleep 0.5 ;
+        done
+    silent: true
+
+  init:
+    desc: Run Terraform init
+    cmds:
+      - '{{.TERRAFORM_BINARY}} init'
+
+  plan:rancher-infra:
+    desc: Run Terraform plan
+    cmds:
+      - '{{.TERRAFORM_BINARY}} plan -target module.rancher-infra'
+
+  plan:rancher-instance:
+    desc: Run Terraform plan
+    cmds:
+      - '{{.TERRAFORM_BINARY}} plan -target module.rancher-instance'
+
+  plan:rancher-bootstrap:
+    desc: Run Terraform plan
+    cmds:
+      - task: check-port-ready
+      - '{{.TERRAFORM_BINARY}} plan -target module.rancher-bootstrap'
+
+  plan:rancher-config:
+    desc: Run Terraform plan
+    cmds:
+      - task: check-cluster-ready
+      - '{{.TERRAFORM_BINARY}} plan -target module.rancher-bootstrap'
+
+  apply:rancher-infra:
+    desc: Run Terraform plan
+    cmds:
+      - '{{.TERRAFORM_BINARY}} apply -target module.rancher-infra'
+
+  apply:rancher-instance:
+    desc: Run Terraform plan
+    cmds:
+      - '{{.TERRAFORM_BINARY}} apply -target module.rancher-instance'
+
+  apply:rancher-bootstrap:
+    desc: Run Terraform plan
+    cmds:
+      - task cattle-prod:check-port-ready
+      - '{{.TERRAFORM_BINARY}} apply -target module.rancher-bootstrap'
+
+  apply:rancher-config:
+    desc: Run Terraform plan
+    cmds:
+      - task: check-cluster-ready
+      - '{{.TERRAFORM_BINARY}} apply -target module.rancher-config'
+
+
+  destroy:rancher-instance:
+    desc: Destroy instance
+    cmds:
+      - '{{.TERRAFORM_BINARY}} destroy -target module.rancher-instance'
+      - '{{.TERRAFORM_BINARY}} state rm $({{.TERRAFORM_BINARY}} state list module.rancher-bootstrap )'
+      - '{{.TERRAFORM_BINARY}} state rm $({{.TERRAFORM_BINARY}} state list module.rancher-config )'
+
+
+  apply:
+    desc: Run Terraform apply
+    cmds:
+      - task: apply:rancher-infra
+      - task: apply:rancher-instance
+      - task: apply:rancher-bootstrap
+      - task: apply:rancher-config

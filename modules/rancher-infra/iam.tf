@@ -10,6 +10,11 @@ resource "aws_iam_policy" "this_external_dns" {
   })
 }
 
+resource "aws_iam_policy" "this_describe_network_interface" {
+  name = "${var.env-name}_ec2_describe_network_interface"
+  policy = templatefile("${path.module}/templates/describe_network_interface.json", {})
+}
+
 resource "aws_iam_role" "this" {
   name               = "${var.env-name}_instance_role"
   assume_role_policy = <<EOF
@@ -36,9 +41,14 @@ resource "aws_iam_role_policy_attachment" "this_volume" {
   policy_arn = aws_iam_policy.this_volume.arn
 }
 
-resource "aws_iam_role_policy_attachment" "external_dns" {
+resource "aws_iam_role_policy_attachment" "this_external_dns" {
   role       = aws_iam_role.this.name
   policy_arn = aws_iam_policy.this_external_dns.arn
+}
+
+resource "aws_iam_role_policy_attachment" "this_describe_network_interface" {
+  role       = aws_iam_role.this.name
+  policy_arn = aws_iam_policy.this_describe_network_interface.arn
 }
 
 resource "aws_iam_instance_profile" "this" {
