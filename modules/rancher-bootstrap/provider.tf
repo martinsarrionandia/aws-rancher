@@ -14,16 +14,3 @@ provider "rancher2" {
   api_url   = var.api-url
   token_key = rancher2_bootstrap.this.token
 }
-
-# Helm Provider
-provider "helm" {
-  kubernetes {
-    config_path = local_file.kube_config.filename
-  }
-}
-
-# Kubernetes Provider
-provider "kubernetes" {
-  config_path = local_file.kube_config.filename
-  insecure    = false
-}

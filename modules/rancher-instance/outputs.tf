@@ -7,5 +7,5 @@ output "fqdn" {
 }
 
 output "public-ip" {
-  value = aws_eip.this.address
+  value = aws_eip.this.public_ip
 }

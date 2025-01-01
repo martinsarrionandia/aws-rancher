@@ -24,6 +24,7 @@ module "rancher-bootstrap" {
 }
 
 module "rancher-config" {
+  depends_on              = [module.rancher-bootstrap]
   source                  = "./modules/rancher-config"
   region                  = module.rancher-infra.region
   rancher-secret-arn      = var.rancher-secret-arn
