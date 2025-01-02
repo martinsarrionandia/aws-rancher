@@ -1,6 +1,6 @@
 resource "null_resource" "ip-allowlist" {
   triggers = {
-    always_run = "${timestamp()}"
+    always_run = timestamp()
   }
 
   connection {

@@ -11,7 +11,7 @@ resource "aws_iam_policy" "this_external_dns" {
 }
 
 resource "aws_iam_policy" "this_describe_network_interface" {
-  name = "${var.env-name}_ec2_describe_network_interface"
+  name   = "${var.env-name}_ec2_describe_network_interface"
   policy = templatefile("${path.module}/templates/describe_network_interface.json", {})
 }
 
