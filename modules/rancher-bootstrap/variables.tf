@@ -5,3 +5,7 @@ variable "rancher-secret-arn" {
 variable "api-url" {
   type = string
 }
+
+variable "fqdn" {
+  type = string
+}

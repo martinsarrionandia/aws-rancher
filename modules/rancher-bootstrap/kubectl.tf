@@ -1,6 +1,6 @@
 resource "local_file" "this_kube_config" {
   content         = data.rancher2_cluster.this.kube_config
-  filename        = pathexpand("~/.kube/config")
+  filename        = pathexpand("~/.kube/${var.fqdn}")
   file_permission = "0600"
   lifecycle {
     ignore_changes = all

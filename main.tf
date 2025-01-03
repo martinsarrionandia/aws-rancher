@@ -20,6 +20,7 @@ module "rancher-instance" {
 module "rancher-bootstrap" {
   source             = "./modules/rancher-bootstrap"
   api-url            = module.rancher-instance.api-url
+  fqdn               = module.rancher-instance.fqdn
   rancher-secret-arn = var.rancher-secret-arn
 }
 
