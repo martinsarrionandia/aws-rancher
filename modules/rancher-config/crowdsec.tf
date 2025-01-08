@@ -68,6 +68,7 @@ agent:
       podName: traefik-*
       # as in crowdsec configuration, we need to specify the program name to find a matching parser
       program: traefik
+      poll_without_inotify: true
   env:
     - name: COLLECTIONS
       value: "crowdsecurity/traefik"

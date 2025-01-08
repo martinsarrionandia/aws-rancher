@@ -5,7 +5,7 @@ provider "rancher2" {
   api_url   = var.api-url
   bootstrap = true
   insecure  = false
-  timeout   = "300s"
+  timeout   = "600s"
 }
 
 # Provider rancher2 post bootstrap

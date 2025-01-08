@@ -42,6 +42,9 @@ resource "aws_instance" "this" {
     command = "ssh-keygen -R ${self.tags.Name}"
     when    = destroy
   }
+  lifecycle {
+    ignore_changes = [ami, user_data]
+  }
 }
 
 resource "aws_network_interface" "this" {

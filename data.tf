@@ -1,3 +1,3 @@
 data "local_file" "kube_config" {
-  filename = pathexpand("~/.kube/config")
+  filename = local.kube-config-file
 }

@@ -44,13 +44,13 @@ variable "crowdsec-privileged" {
 
 variable "traefik-log-level" {
   type = string
-  #default = "INFO"
-  default = "DEBUG"
+  default = "INFO"
+  #default = "DEBUG"
 }
 
 variable "traefik-access-log" {
   type    = bool
-  default = "true"
+  default = "false"
 }
 
 variable "traefik-external-access-policy" {

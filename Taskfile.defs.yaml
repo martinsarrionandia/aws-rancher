@@ -26,7 +26,7 @@ tasks:
         sleep 0.1; 
         done
     silent: true
-    internal: true
+    internal: false
 
   check-cluster-ready:
     desc: Check if cluster is ready
@@ -37,7 +37,7 @@ tasks:
         sleep 0.1 ;
         done
     silent: true
-    internal: true
+    internal: false
 
   init:
     desc: Run Terraform init
@@ -64,7 +64,7 @@ tasks:
     desc: Plan terrafrom config module
     cmds:
       - task: check-cluster-ready
-      - '{{.TERRAFORM_BINARY}} plan -target module.rancher-bootstrap'
+      - '{{.TERRAFORM_BINARY}} plan -target module.rancher-config'
 
   apply:rancher-infra:
     desc: Apply terrafrom infra module
