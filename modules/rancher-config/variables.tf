@@ -43,7 +43,7 @@ variable "crowdsec-privileged" {
 }
 
 variable "traefik-log-level" {
-  type = string
+  type    = string
   default = "INFO"
   #default = "DEBUG"
 }
