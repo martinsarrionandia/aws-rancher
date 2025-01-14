@@ -17,10 +17,8 @@ variable "region" {
 variable "availability-zone" {
   description = "As this is a single node deployment it can only go in one AZ. Set it here"
   type        = string
-  default     = "eu-west-2a"
 }
 
 variable "subnet-cidr" {
-  type    = string
-  default = "10.0.1.0/24"
+  type = string
 }

@@ -1,7 +1,7 @@
 resource "helm_release" "external-dns-aws" {
   namespace  = kubernetes_namespace.external-dns-aws.metadata[0].name
   name       = var.external-dns-name
-  repository = "oci://registry-1.docker.io/bitnamicharts/"
+  repository = "https://kubernetes-sigs.github.io/external-dns/"
   chart      = "external-dns"
 
   set {

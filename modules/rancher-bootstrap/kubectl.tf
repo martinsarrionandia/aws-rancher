@@ -8,7 +8,7 @@ resource "local_file" "this_kube_config" {
 }
 
 resource "time_sleep" "cluster_ready_timer" {
-  create_duration = "5s"
+  create_duration = "120s"
   depends_on = [
     local_file.this_kube_config
   ]

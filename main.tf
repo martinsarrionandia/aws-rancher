@@ -1,14 +1,19 @@
 module "rancher-infra" {
-  source      = "./modules/rancher-infra"
-  env-name    = "Container"
-  domain-name = "sarrionandia.co.uk"
+  source            = "./modules/rancher-infra"
+  env-name          = var.env-name
+  region            = var.region
+  availability-zone = var.availability-zone
+  subnet-cidr       = var.subnet-cidr
+  domain-name       = var.domain-name
 }
 
 module "rancher-instance" {
   source             = "./modules/rancher-instance"
-  env-name           = "Container"
-  instance-key-name  = "sarrionandia-eu-w2"
-  host-name          = "rancher"
+  env-name           = var.env-name
+  availability-zone  = var.availability-zone
+  instance-key-name  = var.instance-key-name
+  instance-type      = var.instance-type
+  hostname           = var.hostname
   domain-name        = module.rancher-infra.domain-name
   instance-profile   = module.rancher-infra.instance-profile
   rancher-secret-arn = var.rancher-secret-arn

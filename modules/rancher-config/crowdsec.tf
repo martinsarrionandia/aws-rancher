@@ -27,7 +27,7 @@ resource "helm_release" "crowdsec" {
   }
 }
 
-resource "kubernetes_manifest" "crowdsec-middlewarre" {
+resource "kubernetes_manifest" "crowdsec-middleware" {
   manifest = yamldecode(local.crowdsec-middleware-config)
 }
 

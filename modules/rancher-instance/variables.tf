@@ -6,7 +6,6 @@ variable "env-name" {
 variable "availability-zone" {
   description = "As this is a single node deployment it can only go in one AZ. Set it here"
   type        = string
-  default     = "eu-west-2a"
 }
 
 variable "subnet-id" {
@@ -27,7 +26,6 @@ variable "instance-key-name" {
 variable "instance-type" {
   description = "The type of instance to use"
   type        = string
-  default     = "t4g.large"
 }
 
 variable "instance-profile" {
@@ -46,10 +44,9 @@ variable "domain-name" {
   type        = string
 }
 
-variable "host-name" {
+variable "hostname" {
   description = "Hostname of the rancher server"
   type        = string
-  default     = "rancher"
 }
 
 variable "letsencrypt-email" {

@@ -1,5 +1,5 @@
 
 locals {
-  fqdn    = "${var.host-name}.${var.domain-name}"
-  api_url = "https://${var.host-name}.${var.domain-name}"
+  fqdn    = "${var.hostname}.${var.domain-name}"
+  api_url = "https://${local.fqdn}"
 }
