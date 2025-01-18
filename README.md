@@ -16,6 +16,7 @@ To get started, make sure you have the following:
 - **[S3](https://aws.amazon.com/s3/) Bucket for state files**
 - **[Secrets Manager](https://aws.amazon.com/secrets-manager/)** for storing `passw0rdz.txt`
 - **[t4g](https://aws.amazon.com/ec2/instance-types/t4/)** large EC2 instance (8GB of RAM required for a single-node instance; anything less results in pod restarts)
+- **[Crowdsec Enroll Key](https://www.crowdsec.net/)** Sign up for a free tier account
 
 ---
 
@@ -148,6 +149,12 @@ Bootstraps the Rancher server and sets the admin password. This component genera
 
 > **_NOTE:_** This component runs only once, and the bootstrap token expires shortly after. This bootstrap is not to be confued with EC2 Bootstrapping.
 
+The `kubectl` filename is the fqdn. To use the specific cluster ensure you configure you ENV as the default file is `config`;
+
+```bash
+export KUBECONFIG="${HOME}/.kube/rancher.sarrionandia.co.uk"
+```
+
 ### rancher-config
 Installs and configures several components, including:
 
@@ -248,3 +255,25 @@ kubectl logs --follow traefik-fb6486f5-p46dx -n kube-system
 10.42.0.1 - - [19/Oct/2024:10:25:36 +0000] "GET /ping HTTP/1.1" 200 2 "-" "-" 157076 "ping@internal" "-" 0ms
 185.77.56.38 - - [19/Oct/2024:10:25:41 +0000] "GET /k8s/clusters/local/api/v1/namespaces/kube-system/pods/traefik-fb6486f5-p46dx HTTP/2.0" 200 8606 "-" "-" 157077 "websecure-cattle-system-rancher-rancher-sarrionandia-co-uk@kubernetes" "http://10.42.0.14:80" 4ms
 ```
+
+---
+
+# Useful commands
+
+## Access the traefik dashboard
+
+There is no default ingress for the dashbaord, so you will need to create one or just tunnel the traffic.
+
+kubectl can perform port forwarding in the same way as an SSH Tunnel.
+
+To access the traefik dashboard enter the following command on your laptop. The will route 8080 on your laptop to the traefik pod port 8080 where the dashbaord is running.
+
+```bash
+kubectl --namespace=traefik port-forward $(kubectl get pods --namespace=traefik --selector "app.kubernetes.io/name=traefik" --output=name) 8080:8080
+```
+
+Leave the terminal running...
+
+Then browse to;
+
+[http://localhost:8080/dashboard/#/](http://localhost:8080/dashboard/#/)
