@@ -142,6 +142,9 @@ This component provisions:
 
 - Elastic IP
 - EC2 Instance
+- SE Linux configuration
+- K3S and Rancher
+- Traefik 3 Ingress controller
 - Initial IP Allowlist for API access
 
 ### rancher-bootstrap
@@ -232,7 +235,7 @@ task cattle-prod:apply
 Get the logs from the traefik pod
 
 ```bash
-kubectl get pods -n kube-system
+kubectl get pods -n traefik
 
 NAME                                      READY   STATUS      RESTARTS   AGE
 coredns-7b98449c4-cl666                   1/1     Running     0          2d11h
@@ -246,7 +249,7 @@ metrics-server-cdcc87586-dm4db            1/1     Running     0          2d11h
 svclb-traefik-33578b2c-bbf8n              2/2     Running     0          2d11h
 traefik-fb6486f5-p46dx
 
-kubectl logs --follow traefik-fb6486f5-p46dx -n kube-system
+kubectl logs --follow traefik-fb6486f5-p46dx -n traefik
 
 "-" 157071 "websecure-matrix-matrix-matrix-synapse-matrix-sarrionandia-co-uk-matrix@kubernetes" "http://10.42.0.53:8008" 1ms
 185.77.56.38 - - [19/Oct/2024:10:25:33 +0000] "GET /k8s/clusters/local/api/v1/namespaces/kube-system/pods/traefik-fb6486f5-p46dx HTTP/2.0" 200 8606 "-" "-" 157073 "websecure-cattle-system-rancher-rancher-sarrionandia-co-uk@kubernetes" "http://10.42.0.15:80" 4ms
