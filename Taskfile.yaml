@@ -6,12 +6,13 @@ vars:
   PROJECT_NAME: aws-rancher
   TERRAFORM_BINARY: terraform
   AWS_REGION: eu-west-2
+  AWS_AZ: a
 
 includes:
   cattle-prod:
     taskfile: ./Taskfile.defs.yaml
     vars:
-      WORKSPACE: cattle-prod
+      WORK_ENV: cattle-prod
       AWS_ACCOUNT_ID: 281287281094
       AWS_ACCOUNT_NAME: 'sarrionandia.co.uk'
       AWS_PROFILE: 'default'

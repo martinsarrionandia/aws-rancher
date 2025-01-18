@@ -8,6 +8,8 @@ Builds an environment, single node rancher instance and some useful stuff. Manag
 
  * [terraform binary](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli)
 
+ * [Taskfile.dev](https://taskfile.dev/)
+
  * [AWS Account](https://aws.amazon.com/)
 
  * [Route53](https://aws.amazon.com/route53/) Hosted Zone
@@ -19,6 +21,20 @@ Builds an environment, single node rancher instance and some useful stuff. Manag
  * [t4g](https://aws.amazon.com/ec2/instance-types/t4/) large instance. 8GB of ram is required for a single node isntance. Anything less results in pod restarts.
 
 ## Setup
+
+This guide will walk you though an example configuration as follows;
+
+- Work Environemnt: cattle-prod
+- Region: ew-west-2
+- Availability Zone: ew-west-2a
+- DNS dmoain: sarrionandia.co.uk
+- Hostname: rancher
+- S3 state bucket: tf-state.sarrionandia.co.uk
+- AWS Secret: myranchersecret
+- EC2 Private key name: sarrionandia-eu-w2
+
+
+### Getting started
 
 - Install the [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
 
@@ -37,17 +53,20 @@ Default region name: eu-west-2 (for London)
 Default output format: json
 ```
 
-- Create an S3 Bucket using the aws cli. This bucket is for the state file. In this example, I have used my domain name sarrionandia.co.uk. Buckets are private by default.
+- Create an S3 Bucket using the aws cli. This bucket is for the state file. Buckets are private by default. Keep a copy of the output name for later.
 
 ```bash
-aws s3api create-bucket --bucket sarrionandia.co.uk --region eu-west-2
+echo -n "Enter domain name:"
+read DOMAIN
+export BUCKET="tf-state.$DOMAIN"
+aws s3 mb s3://"$BUCKET"
 ```
 
-- Create a secret called *rancher* using the aws cli. Remember to change the values *consolepassword*, *adminpassword* and *rootpassword* .These values will be used to set your passwords during deployment later.
+- Create a secret called using the aws cli. Remember to change the values *consolepassword*, *adminpassword* and *rootpassword* .These values will be used to set your passwords during deployment later.
 
 ```bash
 aws secretsmanager create-secret \
-    --name rancher \
+    --name myranchersecret \
     --description "Rancher secrets" \
     --secret-string "{\"admin\":\"adminpassword\",\"root\":"\rootpassword\",\"bootstrap\":\"bootstrappassword\"}"
 ```
@@ -69,41 +88,40 @@ aws ec2 create-key-pair \
     --output text > ~/.ssh/sarrionandia-eu-w2.pem
 ```
 
-- Change the following variable values in 
+- Add a section to (Taskfile.yaml)
 
-(rancher-infra/variables.tf)
+Multiple configurations can deployed through the use of include sections in (Taskfile.yaml). We will be working on *cattle-prod*.
 
- - region
- - availability-zone
- - instance-key-name
- - domain-name
- - letsencrypt-email
- - rancher-secret-arn
-
-- Change the state bucket locations in the following files
-
-[rancher-infra/backend.tf](rancher-infra/backend.tf)
-
-[rancher-bootstrap/backend.tf](rancher-bootstrap/backend.tf)
-
-[rancher-config/backend.tf](rancher-config/backend.tf)
-
-[rancher-bootstrap/remote.tf](rancher-bootstrap/remote.tf)
-
-[rancher-config/remote.tf](rancher-config/remote.tf)
-
-Or just run this
-
-```bash
-export BUCKETNAME=stubbornstains.co.uk
-
-find . -type f -name 'remote.tf' -exec sed -i '' -e "s/sarrionandia\.co\.uk/$BUCKETNAME/g" {} \;
-find . -type f -name 'backend.tf' -exec sed -i '' -e "s/sarrionandia\.co\.uk/$BUCKETNAME/g" {} \;
+```yaml
+includes:
+  cattle-prod:
+    taskfile: ./Taskfile.defs.yaml
+    vars:
+      WORKSPACE: cattle-prod
+      AWS_ACCOUNT_ID: 281287281094
+      AWS_ACCOUNT_NAME: 'sarrionandia.co.uk'
+      AWS_PROFILE: 'default'
+      AWS_ROLE_ARN: 'arn:aws:iam::{{.AWS_ACCOUNT_ID}}:user/martin'
 ```
 
+- Change the following variable values in
 
- - Because of "reasons" my state bucket is in eu-west-1, but I'm deploying to eu-west-2 Change the bucket region if you have to.
- 
+(vars/common.tfvars)
+(vars/cattle-prod.tfvars)
+
+- instance-key-name
+- domain-name
+- letsencrypt-email
+- rancher-secret-arn
+- domain-name
+- hostname
+- rancher-secret-arn
+- instance-key-name
+
+These are already configured for the exmaple data above. Change these to suit your needs.
+
+(variables.tf) Contains some default values which can be overriden in (vars/common.tfvars) and (vars/cattle-prod.tfvars)
+
  *Note*
 
   It's best not to manage any secret data with terraform as the contents are stored in an S3 bucket. Even if it's encrypted. As we are not storing nuclear launch codes, we will make an exception due to laziness. 
@@ -118,18 +136,26 @@ Creates everything you need to host the rancher software.
  * Subnet
  * Route Table
  * Internet GW
+ * IAM Policies
+ * S3 Endpoint
+
+## rancher-instance
+
  * Elastic IP
  * EC2 Instance
- * Initial IP Whitelist
- * IAM Policies
+ * Initial IP Allowlist for API access
 
-The rancher installation will be performed by the cloud-init user data bootsrap shell script
+The k3s/rancher installation will be performed by the cloud-init user data bootstrap shell script
 
 ## rancher-bootstrap
 
-This componenet will "bootstrap" the rancher serve and set the admin password. Once complete, it will generate a local [kubectl config file] (https://kubernetes.io/docs/concepts/configuration/organize-cluster-access-kubeconfig/)
+This componenet will "bootstrap" the rancher server and set the admin password. Once complete, it will generate a local [kubectl config file] (https://kubernetes.io/docs/concepts/configuration/organize-cluster-access-kubeconfig/)
+
+This componenet will run only once. The bootstarp token will be invalided shortly after. This is by design.
 
 You may then proceed to interact with kubernetes using the kubectl command.
+
+This componenet is not th same thing as user data bootstrap, which is performed in the previous componenet.
 
 ## rancher-config
 
@@ -151,14 +177,19 @@ This componenet installs and configures
 
     Manages a traefik IP Whitelist to restrict access to the rancher API
 
+ * [crowdsec WAF](https://www.crowdsec.net/)
+
+    Install Crowdsec threat intelligence and middleware componenet. Reouting is optional, see example deployments below.
+
 # Instructions
 
 ## Build
 
-In the component order: rancher-infra, rancer-bootstrap then rancher-config perform;
+Use the `task` command to apply configuration
 
 ```bash
-terraform apply
+task cattle-prod:init
+task cattle-prod:apply
 ``` 
 
 ## Persistent Volumes
@@ -175,32 +206,44 @@ Here are some example deployments to get you going...
 
 [wordpress](https://github.com/martinsarrionandia/mojobooth.co.uk)
 
-## Update IP Whitelist
+## Update IP Allowlist
+
+This is currently a mess and will be re-engineering with AWS Session Manager shotrly...
 
 Due to "reasons" it is not recommended to run rancher on a different port to 443. Restricting access to rancher with an SG is therefore not practical.
 
 Alternatives include using a AWS ELB which is expensive.
 
-However, a basic IP Whitelist can be applied via traefik middleware.
+However, a basic IP Allowlist can be applied via traefik middleware.
 
-During the deploymenty your laptop public IP is automatically added to the SG for ssh and rancher ip whitelist. If this changes you will be locked out.
+During the deploymenty your laptop/pipeline public IP is automatically added to the SG for ssh and rancher ip allowlist. If this changes you will be locked out.
 
-To update the ssh SG source reapply terrafrom in rancher-infra componenet. 
+To update the ssh SG source reapply terrafrom for rancher-infra componenet.
 
-Then you can run the [rancher-config/apply-ip-whitelist.sh](rancher-config/apply-ip-whitelist.sh) script
+Then SSH onto your server.
 
-You will need to manually point the private key to your EC2 key pair here [rancher-config/ip-whitelist.tf](rancher-config/ip-whitelist.tf)
+edit /root/allowlist.yaml
 
-## Turn on Traefik Logs
+Modify the IP address.
 
-Set the varialbes: *traefik-log-level* to DEBUG and *traefik-access-log* to true
+then run 
+
+```bash
+kubectl apply -f /root/allowlist.yaml
+```
+
+## Turn on Traefik DEBUG Logs
+
+By default traefik is configured to log INFO level events.
+
+Set the varialbes: *traefik-log-level* to DEBUG.
 
 [rancher-config/variables.tf](rancher-config/variables.tf)
 
-Apply terrafrom in the rancher-config component
+Apply terrafrom.
 
 ```bash
-terraform apply
+task cattle-prod:apply
 ```
 Get the logs from the traefik pod
 
@@ -231,4 +274,20 @@ kubectl logs --follow traefik-fb6486f5-p46dx -n kube-system
 
 # Useful commands
 
+## Access the traefik dashboard
 
+There is no default ingress for the dashbaord, so you will need to create one or just tunnel the traffic.
+
+kubectl can perform port forwarding in the same way as an SSH Tunnel.
+
+To access the traefik dashboard enter the following command on your laptop. The will route 8080 on your laptop to the traefik pod port 8080 where the dashbaord is running.
+
+```bash
+kubectl --namespace=traefik port-forward $(kubectl get pods --namespace=traefik --selector "app.kubernetes.io/name=traefik" --output=name) 8080:8080
+```
+
+Leave the terminal running...
+
+Then browse to;
+
+[http://localhost:8080/dashboard/#/](http://localhost:8080/dashboard/#/)

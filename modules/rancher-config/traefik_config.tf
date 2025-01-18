@@ -29,8 +29,10 @@ providers:
 logs:
   general:
     level: "${var.traefik-log-level}"
+    format: json
   access:
     enabled: ${var.traefik-access-log}
+    format: json
 service:
   spec:
     externalTrafficPolicy: "${var.traefik-external-access-policy}"

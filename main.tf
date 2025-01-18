@@ -1,16 +1,16 @@
 module "rancher-infra" {
   source            = "./modules/rancher-infra"
-  env-name          = var.env-name
-  region            = var.region
-  availability-zone = var.availability-zone
+  env-name          = local.work-env
+  region            = local.region
+  availability-zone = local.availability-zone
   subnet-cidr       = var.subnet-cidr
   domain-name       = var.domain-name
 }
 
 module "rancher-instance" {
   source             = "./modules/rancher-instance"
-  env-name           = var.env-name
-  availability-zone  = var.availability-zone
+  env-name           = local.work-env
+  availability-zone  = local.availability-zone
   instance-key-name  = var.instance-key-name
   instance-type      = var.instance-type
   hostname           = var.hostname

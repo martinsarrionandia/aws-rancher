@@ -50,7 +50,7 @@ variable "traefik-log-level" {
 
 variable "traefik-access-log" {
   type    = bool
-  default = "false"
+  default = "true"
 }
 
 variable "traefik-external-access-policy" {
