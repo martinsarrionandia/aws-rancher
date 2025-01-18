@@ -51,11 +51,15 @@ resource "aws_network_interface" "this" {
   subnet_id       = var.subnet-id
   security_groups = var.security-groups
   tags = {
-    Name        = "primary_network_interface"
+    Name        = "${local.fqdn}-eth0"
     Environment = var.env-name
   }
 }
 
 resource "aws_eip" "this" {
   network_interface = aws_network_interface.this.id
+  tags = {
+    Name        = "${local.fqdn}-eth0"
+    Environment = var.env-name
+  }
 }

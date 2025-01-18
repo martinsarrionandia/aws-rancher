@@ -1,8 +1,3 @@
-variable "env-name" {
-  description = "Name of the environment"
-  type        = string
-}
-
 variable "subnet-cidr" {
   type    = string
   default = "10.0.1.0/24"

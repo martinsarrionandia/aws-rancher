@@ -1,5 +1,6 @@
-data "local_file" "kube_config" {
-  filename = local.kube-config-file
+data "local_file" "kubectl_config" {
+  filename = module.rancher-bootstrap.kubectl-file
+
 }
 
 data "external" "env" {

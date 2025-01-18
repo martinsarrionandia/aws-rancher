@@ -5,11 +5,11 @@ provider "aws" {
 # Helm Provider
 provider "helm" {
   kubernetes {
-    config_path = data.local_file.kube_config.filename
+    config_path = data.local_file.kubectl_config.filename
   }
 }
 
 # Kubernetes Provider
 provider "kubernetes" {
-  config_path = data.local_file.kube_config.filename
+  config_path = data.local_file.kubectl_config.filename
 }

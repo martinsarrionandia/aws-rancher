@@ -5,66 +5,30 @@ silent: true
 env:
   AWS_REGION: "{{.AWS_REGION}}"
   AWS_AZ: "{{.AWS_AZ}}"
+  WORK_ENV: "{{.WORK_ENV}}"
   TF_VAR_workspace_aws_role_arn: '{{.AWS_ROLE_ARN}}'
   TF_VAR_workspace_aws_config_file: '{{.AWS_CONFIG_FILE}}'
 
   TF_CLI_ARGS_init: >-
     -backend-config="region={{.AWS_REGION}}"
     -backend-config="bucket=tf-state.{{.AWS_ACCOUNT_NAME}}"
-    -backend-config="key="{{.PROJECT_NAME}}/{{.WORK_ENV}}/terraform.tfstate""
+    -backend-config="key={{.PROJECT_NAME}}/{{.WORK_ENV}}/terraform.tfstate"
   TF_CLI_ARGS_plan: '-var-file=./vars/common.tfvars -var-file=./vars/{{.WORK_ENV}}.tfvars'
   TF_CLI_ARGS_apply: '-var-file=./vars/common.tfvars -var-file=./vars/{{.WORK_ENV}}.tfvars'
+  TF_CLI_ARGS_destroy: '-var-file=./vars/common.tfvars -var-file=./vars/{{.WORK_ENV}}.tfvars'
+  TF_CLI_ARGS_refresh: '-var-file=./vars/common.tfvars -var-file=./vars/{{.WORK_ENV}}.tfvars'
 
 tasks:
-  check-port-ready:
-    desc: Check if cluster is ready for bootstrap
-    cmds:
-      - |
-        echo "Waiting for port ready..."
-        export FQDN=$(terraform output -raw fqdn)
-        while !  nc -z "$FQDN" 443 > /dev/null 2>&1; do   
-        sleep 0.1; 
-        done
-    silent: true
-    internal: false
-
-  check-cluster-ready:
-    desc: Check if cluster is ready
-    cmds:
-      - |
-        echo "Waiting for cluster ready"
-        while ! kubectl cluster-info > /dev/null 2>&1; do   
-        sleep 0.1 ;
-        done
-    silent: true
-    internal: false
-
   init:
     desc: Run Terraform init
     cmds:
       - '{{.TERRAFORM_BINARY}} init'
 
-  plan:rancher-infra:
-    desc: Plan terrafrom infra module
+  delete-state-files:
+    desc: Delete terraform state
     cmds:
-      - '{{.TERRAFORM_BINARY}} plan -target module.rancher-infra'
-
-  plan:rancher-instance:
-    desc: Plan terrafrom instance module
-    cmds:
-      - '{{.TERRAFORM_BINARY}} plan -target module.rancher-instance'
-
-  plan:rancher-bootstrap:
-    desc: Plan terrafrom bootstrap module
-    cmds:
-      - task: check-port-ready
-      - '{{.TERRAFORM_BINARY}} plan -target module.rancher-bootstrap'
-
-  plan:rancher-config:
-    desc: Plan terrafrom config module
-    cmds:
-      - task: check-cluster-ready
-      - '{{.TERRAFORM_BINARY}} plan -target module.rancher-config'
+      - aws s3 rm 's3://tf-state.{{.AWS_ACCOUNT_NAME}}/{{.PROJECT_NAME}}/{{.WORK_ENV}}/terraform.tfstate'
+      - rm '.terraform/terraform.tfstate'
 
   apply:rancher-infra:
     desc: Apply terrafrom infra module
@@ -79,25 +43,55 @@ tasks:
   apply:rancher-bootstrap:
     desc: Apply terrafrom bootstrap module
     cmds:
-      - task cattle-prod:check-port-ready
-      - '{{.TERRAFORM_BINARY}} apply -target module.rancher-bootstrap'
 
+      - '{{.TERRAFORM_BINARY}} apply -target module.rancher-bootstrap'
+    preconditions:
+      - sh: |
+          echo "Waiting for port ready..."
+          export FQDN=$(terraform output -raw fqdn)
+          while !  nc -z "$FQDN" 443 > /dev/null 2>&1; do   
+          sleep 0.1; 
+          done
+        msg: kubeernetes api not accessible
+    
   apply:rancher-config:
     desc: Apply terrafrom config module
     cmds:
-      - task: check-cluster-ready
       - '{{.TERRAFORM_BINARY}} apply -target module.rancher-config'
+    preconditions:
+      - sh: |
+          echo "Waiting for cluster ready"
+          export FQDN=$(terraform output -raw fqdn)
+          export KUBECONFIG="${HOME}/.kube/$FQDN"
+          while ! kubectl cluster-info > /dev/null 2>&1; do   
+          sleep 0.1 ;
+          done
+        msg: "Cluster Not Ready"
 
+  destroy:rancher-infra:
+    desc: Destroy Infrastructure
+    cmds:
+      - '{{.TERRAFORM_BINARY}} destroy -target module.rancher-infra'
 
   destroy:rancher-instance:
     desc: Destroy instance
     cmds:
       - '{{.TERRAFORM_BINARY}} destroy -target module.rancher-instance'
+
+  destroy:rancher-config:
+    desc: Destroy configuration
+    cmds:
       - '{{.TERRAFORM_BINARY}} state rm $({{.TERRAFORM_BINARY}} state list module.rancher-bootstrap )'
       - '{{.TERRAFORM_BINARY}} state rm $({{.TERRAFORM_BINARY}} state list module.rancher-config )'
-
+    preconditions:
+      - sh: '{{.TERRAFORM_BINARY}} state list module.rancher-config'
+        msg: "State not found"
 
   apply:
     desc: Run Terraform apply
     cmds:
-     - '{{.TERRAFORM_BINARY}} apply'
+      - task: apply:rancher-infra
+      - task: apply:rancher-instance
+      - task: apply:rancher-bootstrap
+      - task: apply:rancher-config
+      - '{{.TERRAFORM_BINARY}} apply'
