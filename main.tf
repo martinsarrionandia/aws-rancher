@@ -22,6 +22,12 @@ module "rancher-instance" {
   security-groups    = module.rancher-infra.security-groups
 }
 
+module "rancher-allowlist" {
+  source                  = "./modules/rancher-allowlist"
+  instance-ids            = module.rancher-instance.instance-ids
+  ip-allowlist-additional = var.ip-allowlist-additional
+}
+
 module "rancher-bootstrap" {
   source             = "./modules/rancher-bootstrap"
   api-url            = module.rancher-instance.api-url

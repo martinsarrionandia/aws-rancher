@@ -40,10 +40,14 @@ tasks:
     cmds:
       - '{{.TERRAFORM_BINARY}} apply -target module.rancher-instance'
 
+  apply:rancher-allowlist:
+    desc: Apply terrafrom allowlist module
+    cmds:
+      - '{{.TERRAFORM_BINARY}} apply -target module.rancher-allowlist'
+
   apply:rancher-bootstrap:
     desc: Apply terrafrom bootstrap module
     cmds:
-
       - '{{.TERRAFORM_BINARY}} apply -target module.rancher-bootstrap'
     preconditions:
       - sh: |
