@@ -7,6 +7,12 @@ resource "aws_ssm_association" "rancher" {
   }
 }
 
+resource "aws_ssm_parameter" "ip-allow-list" {
+  name  = "ipAllowList"
+  type  = "String"
+  value = join(", ", local.ip-allowlist)
+}
+
 resource "aws_ssm_document" "apply_middlware" {
   name            = "apply_ip_allowlist_middleware"
   document_format = "YAML"
@@ -16,25 +22,29 @@ resource "aws_ssm_document" "apply_middlware" {
 
 locals {
   apply_middleware_document = <<EOF
-schemaVersion: '1.2'
-description: Apply ip allowlist for rancher API access
-runtimeConfig:
-  'aws:runShellScript':
-    properties:
-      - id: '0.aws:runShellScript'
-        runCommand:
-        - |
-          sudo tee /root/allowlist.yaml > /dev/null <<'DOC'
-          apiVersion: traefik.io/v1alpha1
-          kind: Middleware
-          metadata:
-            namespace: middleware
-            name: rancher-ip-allowlist
-          spec:
-            ipWhiteList:
-              sourceRange: %{for ip in local.ip-allowlist}
-              - ${ip} %{endfor}
-          DOC
-          sudo -i kubectl apply -f /root/allowlist.yaml
+schemaVersion: '2.2'
+description: runShellScript with command strings stored as Parameter Store parameter
+parameters:
+  ipAllowList:
+    type: String
+    description: Required The list of ip IDCRs
+    default: "{{ssm:ipAllowList}}"
+mainSteps:
+- action: aws:runShellScript
+  name: runShellScriptDefaultParams
+  inputs:
+    runCommand:
+    - |
+      sudo tee /root/allowlist.yaml > /dev/null <<'DOC'
+      apiVersion: traefik.io/v1alpha1
+      kind: Middleware
+      metadata:
+        namespace: middleware
+        name: rancher-ip-allowlist
+      spec:
+        ipWhiteList:
+          sourceRange: [{{ ipAllowList }}]
+      DOC
+      sudo -i kubectl apply -f /root/allowlist.yaml
 EOF
 }

@@ -15,6 +15,11 @@ resource "aws_iam_policy" "this_describe_network_interface" {
   policy = templatefile("${path.module}/templates/describe_network_interface.json", {})
 }
 
+resource "aws_iam_policy" "this_system_manager" {
+  name   = "${var.env-name}_system_manager"
+  policy = templatefile("${path.module}/templates/system_manager_policy.json", {})
+}
+
 resource "aws_iam_role" "this" {
   name               = "${var.env-name}_instance_role"
   assume_role_policy = <<EOF
@@ -34,6 +39,11 @@ resource "aws_iam_role" "this" {
   ]
 }
 EOF
+}
+
+resource "aws_iam_role_policy_attachment" "this_system_manager" {
+  role       = aws_iam_role.this.name
+  policy_arn = aws_iam_policy.this_system_manager.arn
 }
 
 resource "aws_iam_role_policy_attachment" "this_volume" {
