@@ -19,6 +19,12 @@ dnf update -y
 
 dnf install -y net-tools iotop nc iptables git policycoreutils-python-utils awscli
 
+# Install AWS Session Manager
+
+export ARCH=$(hostnamectl |grep Architecture|awk '{print $2}')
+
+dnf install -y https://s3.amazonaws.com/ec2-downloads-windows/SSMAgent/latest/linux_$ARCH/amazon-ssm-agent.rpm
+
 # Fetch IP address use aws cli
 
 export INSTANCE_ID=$(cat /var/lib/cloud/data/instance-id)
