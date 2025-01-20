@@ -35,6 +35,6 @@ runtimeConfig:
               sourceRange: %{for ip in local.ip-allowlist}
               - ${ip} %{endfor}
           DOC
-          sudo kubectl apply -f /root/allowlist.yaml
+          sudo -i kubectl apply -f /root/allowlist.yaml
 EOF
 }
