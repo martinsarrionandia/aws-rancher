@@ -5,6 +5,7 @@ resource "local_file" "this_kube_config" {
   lifecycle {
     ignore_changes = all
   }
+  depends_on = [data.rancher2_cluster.this]
 }
 
 resource "time_sleep" "cluster_ready_timer" {

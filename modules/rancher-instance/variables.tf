@@ -36,7 +36,7 @@ variable "instance-profile" {
 variable "volume-size" {
   description = "The size of the instance volume"
   type        = string
-  default     = "32"
+  default     = "64"
 }
 
 variable "domain-name" {

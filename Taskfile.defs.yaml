@@ -80,6 +80,7 @@ tasks:
   destroy:rancher-instance:
     desc: Destroy instance
     cmds:
+      - '{{.TERRAFORM_BINARY}} destroy -target module.rancher-bootstrap'
       - '{{.TERRAFORM_BINARY}} destroy -target module.rancher-instance'
 
   destroy:rancher-config:
@@ -96,6 +97,7 @@ tasks:
     cmds:
       - task: apply:rancher-infra
       - task: apply:rancher-instance
+      - task: apply:rancher-whitelist
       - task: apply:rancher-bootstrap
       - task: apply:rancher-config
       - '{{.TERRAFORM_BINARY}} apply'
