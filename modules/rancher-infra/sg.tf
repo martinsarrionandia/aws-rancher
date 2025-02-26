@@ -11,7 +11,7 @@ resource "aws_security_group_rule" "this_mgmt_ssh" {
   from_port         = 22
   to_port           = 22
   protocol          = "tcp"
-  cidr_blocks       = ["${chomp(data.http.my_current_ip.response_body)}/32"]
+  cidr_blocks       = local.ip-allowlist
 }
 
 resource "aws_security_group_rule" "this_mgmt_kube_api" {

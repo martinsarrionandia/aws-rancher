@@ -1,10 +1,11 @@
 module "rancher-infra" {
-  source            = "./modules/rancher-infra"
-  env-name          = local.work-env
-  region            = local.region
-  availability-zone = local.availability-zone
-  subnet-cidr       = var.subnet-cidr
-  domain-name       = var.domain-name
+  source                  = "./modules/rancher-infra"
+  env-name                = local.work-env
+  region                  = local.region
+  availability-zone       = local.availability-zone
+  subnet-cidr             = var.subnet-cidr
+  ip-allowlist-additional = var.ip-allowlist-additional
+  domain-name             = var.domain-name
 }
 
 module "rancher-instance" {

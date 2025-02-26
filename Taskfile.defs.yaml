@@ -97,7 +97,7 @@ tasks:
     cmds:
       - task: apply:rancher-infra
       - task: apply:rancher-instance
-      - task: apply:rancher-whitelist
+      - task: apply:rancher-allowlist
       - task: apply:rancher-bootstrap
       - task: apply:rancher-config
       - '{{.TERRAFORM_BINARY}} apply'
