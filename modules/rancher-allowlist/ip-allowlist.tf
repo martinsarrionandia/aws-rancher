@@ -18,6 +18,11 @@ resource "aws_ssm_document" "apply_middlware" {
   document_format = "YAML"
   document_type   = "Command"
   content         = local.apply_middleware_document
+  lifecycle {
+    replace_triggered_by = [
+      aws_ssm_parameter.ip-allow-list
+    ]
+  }
 }
 
 locals {
