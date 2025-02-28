@@ -5,6 +5,11 @@ resource "helm_release" "external-dns-aws" {
   chart      = "external-dns"
 
   set {
+    name  = "policy"
+    value = "crud"
+  }
+
+  set {
     name  = "replicaCount"
     value = "1"
   }
