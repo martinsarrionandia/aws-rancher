@@ -6,7 +6,7 @@ resource "helm_release" "external-dns-aws" {
 
   set {
     name  = "policy"
-    value = "crud"
+    value = "sync"
   }
 
   set {
