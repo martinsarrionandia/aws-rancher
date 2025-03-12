@@ -40,6 +40,16 @@ resource "aws_security_group" "this_ingress" {
   vpc_id      = aws_vpc.this.id
 }
 
+resource "aws_security_group_rule" "this_ingress_icmp" {
+  description       = "Permit ICMP to cluster"
+  security_group_id = aws_security_group.this_ingress.id
+  type              = "ingress"
+  from_port         = -1
+  to_port           = -1
+  protocol          = "icmp"
+  cidr_blocks       = ["0.0.0.0/0"]
+}
+
 resource "aws_security_group_rule" "this_ingress_http" {
   description       = "Permit HTTP to cluster"
   security_group_id = aws_security_group.this_ingress.id

@@ -3,8 +3,7 @@ resource "helm_release" "crowdsec" {
   name       = var.crowdsec-name
   repository = "https://crowdsecurity.github.io/helm-charts"
   chart      = "crowdsec"
-  #version    = "0.15"
-  values = [local.crowdsec-helm-values]
+  values     = [local.crowdsec-helm-values]
 
   set {
     name  = "agent.resources.limits.memory"
