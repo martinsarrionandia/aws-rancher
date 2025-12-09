@@ -1,5 +1,5 @@
 resource "local_file" "this_kube_config" {
-  content         = local.kubectl-content
+  content         = data.rancher2_cluster.this[0].kube_config
   filename        = local.kubectl-file
   file_permission = "0600"
   lifecycle {

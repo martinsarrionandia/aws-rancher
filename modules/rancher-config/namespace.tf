@@ -1,10 +1,10 @@
-resource "kubernetes_namespace" "external-dns-aws" {
+resource "kubernetes_namespace_v1" "external-dns-aws" {
   metadata {
     name = "extertnal-dns-aws"
   }
 }
 
-resource "kubernetes_namespace" "crowdsec" {
+resource "kubernetes_namespace_v1" "crowdsec" {
   metadata {
     name = "crowdsec"
     labels = {

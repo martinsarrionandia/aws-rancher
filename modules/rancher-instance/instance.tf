@@ -27,9 +27,8 @@ resource "aws_instance" "this" {
       ip-allowlist       = "${chomp(data.http.my_current_ip.response_body)}/32",
   })
 
-  network_interface {
+  primary_network_interface {
     network_interface_id = aws_network_interface.this.id
-    device_index         = 0
   }
 
   tags = {

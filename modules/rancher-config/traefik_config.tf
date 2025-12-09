@@ -1,9 +1,9 @@
 resource "helm_release" "traefik" {
-  namespace       = var.traefik-namespace
-  name            = "traefik"
-  repository      = "https://traefik.github.io/charts"
-  chart           = "traefik"
-  version         = "33.1.0"
+  namespace  = var.traefik-namespace
+  name       = "traefik"
+  repository = "https://traefik.github.io/charts"
+  chart      = "traefik"
+  #version         = "35.2.0"
   values          = [local.traefik-helm-manifest]
   replace         = true
   force_update    = true
@@ -16,7 +16,7 @@ deployment:
   additionalVolumes:
   - name: plugins
     persistentVolumeClaim:
-      claimName: "${kubernetes_persistent_volume_claim.traefik_plugins.metadata[0].name}"
+      claimName: "${kubernetes_persistent_volume_claim_v1.traefik_plugins.metadata[0].name}"
 additionalVolumeMounts:
 - name: plugins
   mountPath: /plugins-storage

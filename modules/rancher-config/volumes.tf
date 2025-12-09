@@ -1,4 +1,4 @@
-resource "kubernetes_persistent_volume_claim" "traefik_plugins" {
+resource "kubernetes_persistent_volume_claim_v1" "traefik_plugins" {
   wait_until_bound = false
   metadata {
     name      = "traefik-plugins-claim"

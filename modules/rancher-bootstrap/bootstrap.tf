@@ -5,7 +5,6 @@ resource "rancher2_bootstrap" "this" {
   provider         = rancher2.bootstrap
   initial_password = jsondecode(data.aws_secretsmanager_secret_version.this.secret_string)["bootstrap"]
   password         = jsondecode(data.aws_secretsmanager_secret_version.this.secret_string)["admin"]
-  telemetry        = true
   lifecycle {
     ignore_changes = all
   }

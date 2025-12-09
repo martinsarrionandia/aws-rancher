@@ -1,4 +1,4 @@
-resource "kubernetes_storage_class" "amazon-ebs" {
+resource "kubernetes_storage_class_v1" "amazon-ebs" {
   metadata {
     name = var.amazon-ebs-class
   }

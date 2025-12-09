@@ -5,25 +5,22 @@ resource "helm_release" "crowdsec" {
   chart      = "crowdsec"
   values     = [local.crowdsec-helm-values]
 
-  set {
+  set = [{
     name  = "agent.resources.limits.memory"
     value = "250Mi"
-  }
-
-  set {
-    name  = "agent.resources.limits.cpu"
-    value = "500m"
-  }
-
-  set {
-    name  = "agent.resources.requests.cpu"
-    value = "50m"
-  }
-
-  set {
-    name  = "agent.resources.requests.memory"
-    value = "250Mi"
-  }
+    },
+    {
+      name  = "agent.resources.limits.cpu"
+      value = "500m"
+    },
+    {
+      name  = "agent.resources.requests.cpu"
+      value = "50m"
+    },
+    {
+      name  = "agent.resources.requests.memory"
+      value = "250Mi"
+  }]
 }
 
 resource "kubernetes_manifest" "crowdsec-middleware" {

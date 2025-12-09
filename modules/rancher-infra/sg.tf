@@ -24,13 +24,23 @@ resource "aws_security_group_rule" "this_mgmt_kube_api" {
   source_security_group_id = aws_security_group.this_mgmt.id
 }
 
-resource "aws_security_group_rule" "outbound_all" {
+resource "aws_security_group_rule" "outbound_https" {
   description       = "Permit outbound all"
   security_group_id = aws_security_group.this_mgmt.id
   type              = "egress"
-  from_port         = 0
-  to_port           = 0
-  protocol          = "-1"
+  from_port         = 443
+  to_port           = 443
+  protocol          = "tcp"
+  cidr_blocks       = ["0.0.0.0/0"]
+}
+
+resource "aws_security_group_rule" "outbound_smtp" {
+  description       = "Permit outbound all"
+  security_group_id = aws_security_group.this_mgmt.id
+  type              = "egress"
+  from_port         = 587
+  to_port           = 587
+  protocol          = "tcp"
   cidr_blocks       = ["0.0.0.0/0"]
 }
 
