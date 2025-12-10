@@ -1,5 +1,12 @@
 provider "aws" {
   region = local.region
+  default_tags {
+    tags = {
+      Environment = local.work-env
+      ManagedBy   = "terraform"
+      Repo        = "https://github.com/martinsarrionandia/aws-rancher"
+    }
+  }
 }
 
 # Helm Provider

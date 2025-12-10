@@ -8,13 +8,13 @@ resource "aws_ssm_association" "rancher" {
 }
 
 resource "aws_ssm_parameter" "ip-allow-list" {
-  name  = "ipAllowList"
+  name  = "${var.env-name}-ipAllowList"
   type  = "String"
   value = join(", ", local.ip-allowlist)
 }
 
 resource "aws_ssm_document" "apply_middlware" {
-  name            = "apply_ip_allowlist_middleware"
+  name            = "${var.env-name}-apply_ip_allowlist_middleware"
   document_format = "YAML"
   document_type   = "Command"
   content         = local.apply_middleware_document
@@ -33,7 +33,7 @@ parameters:
   ipAllowList:
     type: String
     description: Required The list of ip IDCRs
-    default: "{{ssm:ipAllowList}}"
+    default: "{{ssm:${aws_ssm_parameter.ip-allow-list.name}}}"
 mainSteps:
 - action: aws:runShellScript
   name: runShellScriptDefaultParams

@@ -25,6 +25,7 @@ module "rancher-instance" {
 
 module "rancher-allowlist" {
   source                  = "./modules/rancher-allowlist"
+  env-name                = local.work-env
   instance-ids            = module.rancher-instance.instance-ids
   ip-allowlist-additional = var.ip-allowlist-additional
 }

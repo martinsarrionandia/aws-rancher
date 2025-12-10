@@ -1,5 +1,5 @@
 domain-name        = "sarrionandia.co.uk"
-hostname           = "rancher-b"
+hostname           = "rancher-b3"
 rancher-secret-arn = "arn:aws:secretsmanager:eu-west-2:281287281094:secret:rancher-QeIi1B"
 instance-key-name  = "sarrionandia-eu-w2"
 subnet-cidr        = "10.0.2.0/24"

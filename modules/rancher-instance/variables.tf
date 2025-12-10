@@ -14,8 +14,8 @@ variable "subnet-id" {
 }
 
 variable "security-groups" {
-  description = "List of security groups for the rancher instance"
-  type        = list(string)
+  description = "Map of security groups for the rancher instance"
+  type        = map(string)
 }
 
 variable "instance-key-name" {

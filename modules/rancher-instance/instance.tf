@@ -48,7 +48,7 @@ resource "aws_instance" "this" {
 
 resource "aws_network_interface" "this" {
   subnet_id       = var.subnet-id
-  security_groups = var.security-groups
+  security_groups = values(var.security-groups)
   tags = {
     Name        = "${local.fqdn}-eth0"
     Environment = var.env-name

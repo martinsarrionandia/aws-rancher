@@ -27,5 +27,6 @@ output "subnet-id" {
 }
 
 output "security-groups" {
-  value = [aws_security_group.this_mgmt.id, aws_security_group.this_ingress.id]
+  value = { mgmt = aws_security_group.this_mgmt.id,
+  ingress = aws_security_group.this_ingress.id }
 }

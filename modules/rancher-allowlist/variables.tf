@@ -8,3 +8,8 @@ variable "instance-ids" {
   description = "List of instances to apply the allow list"
   type        = list(any)
 }
+
+variable "env-name" {
+  description = "Name of the environment"
+  type        = string
+}

@@ -1,5 +1,5 @@
 variable "subnet-cidr" {
-  type    = string
+  type = string
 }
 
 variable "domain-name" {
