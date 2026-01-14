@@ -1,4 +1,4 @@
-output "api-url" {
+output "api_url" {
   value = local.api_url
 }
 
@@ -6,10 +6,10 @@ output "fqdn" {
   value = local.fqdn
 }
 
-output "public-ip" {
+output "public_ip" {
   value = aws_eip.this.public_ip
 }
 
-output "instance-ids" {
+output "instance_ids" {
   value = [aws_instance.this.id]
 }

@@ -1,8 +1,8 @@
-variable "subnet-cidr" {
+variable "subnet_cidr" {
   type = string
 }
 
-variable "domain-name" {
+variable "domain_name" {
   description = "DNS Domain name for IAM policy creation"
   type        = string
 }
@@ -12,28 +12,28 @@ variable "hostname" {
   type        = string
 }
 
-variable "ip-allowlist-additional" {
+variable "ip_allowlist_additional" {
   description = "Additional IP ranges for IP allowlist"
   type        = list(any)
 }
 
-variable "rancher-secret-arn" {
+variable "rancher_secret_arn" {
   description = "AWS Secret Manager ARN for rancher passwords and secret data"
   type        = string
 }
 
-variable "letsencrypt-email" {
+variable "letsencrypt_email" {
   description = "Let's encrypt email for certificate notification events"
   type        = string
 }
 
-variable "instance-type" {
+variable "instance_type" {
   description = "The type of instance to use"
   type        = string
   default     = "t4g.large"
 }
 
-variable "instance-key-name" {
+variable "instance_key_name" {
   description = "This sets the SSH Key used for the instance"
   type        = string
 }

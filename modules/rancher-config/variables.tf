@@ -1,18 +1,14 @@
-variable "region" {
-  type = string
-}
-
-variable "cluster-issuer" {
+variable "cluster_issuer" {
   type    = string
   default = "letsencrypt"
 }
 
-variable "amazon-ebs-class" {
+variable "amazon_ebs_class" {
   type    = string
   default = "amazon-ebs"
 }
 
-variable "external-dns-name" {
+variable "external_dns_name" {
   type    = string
   default = "external-dns"
 }
@@ -22,7 +18,7 @@ variable "crowdsec-name" {
   default = "crowdsec"
 }
 
-variable "crowdsec-namespace" {
+variable "crowdsec_namespace" {
   type    = string
   default = "crowdsec"
 }
@@ -32,23 +28,23 @@ variable "bouncer" {
   default = "bouncer"
 }
 
-variable "traefik-namespace" {
+variable "traefik_namespace" {
   type    = string
   default = "traefik"
 }
 
-variable "crowdsec-privileged" {
+variable "crowdsec_privileged" {
   type    = bool
   default = "true"
 }
 
-variable "traefik-log-level" {
+variable "traefik_log_level" {
   type    = string
   default = "INFO"
   #default = "DEBUG"
 }
 
-variable "traefik-access-log" {
+variable "traefik_access_log" {
   type    = bool
   default = "true"
 }
@@ -59,13 +55,13 @@ variable "traefik-external-access-policy" {
   default     = "Local"
 }
 
-variable "ip-allowlist-additional" {
+variable "ip_allowlist_additional" {
   description = "Additional IP ranges for IP allowlist"
   type        = list(any)
   default     = []
 }
 
-variable "rancher-secret-arn" {
+variable "rancher_secret_arn" {
   type = string
 }
 
@@ -73,10 +69,26 @@ variable "fqdn" {
   type = string
 }
 
-variable "letsencrypt-email" {
+variable "letsencrypt_email" {
   type = string
 }
 
-variable "rancher-role-arn" {
+variable "rancher_role_arn" {
   type = string
+}
+
+variable "domain_name" {
+  description = "DNS Domain name for IAM policy creation"
+  type        = string
+}
+
+variable "public_ip" {
+  description = "Public IP address of the instance"
+  type        = string
+}
+
+variable "region" {
+  description = "Region to deploy rancher infrastructure"
+  type        = string
+  default     = "eu-west-2"
 }

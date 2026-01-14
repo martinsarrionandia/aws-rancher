@@ -22,36 +22,43 @@ tasks:
   init:
     desc: Run Terraform init
     cmds:
+      - rm -f '.terraform/terraform.tfstate'
       - '{{.TERRAFORM_BINARY}} init'
 
   delete-state-files:
     desc: Delete terraform state
+    deps: [init]
     cmds:
       - aws s3 rm 's3://tf-state.{{.AWS_ACCOUNT_NAME}}/{{.PROJECT_NAME}}/{{.WORK_ENV}}/terraform.tfstate'
       - rm '.terraform/terraform.tfstate'
 
   apply:rancher-infra:
+    deps: [init]
     desc: Apply terrafrom infra module
     cmds:
       - '{{.TERRAFORM_BINARY}} apply -target module.rancher-infra'
 
   apply:rancher-instance:
+    deps: [init]
     desc: Apply terrafrom instance module
     cmds:
       - '{{.TERRAFORM_BINARY}} apply -target module.rancher-instance'
 
   apply:rancher-allowlist:
+    deps: [init]
     desc: Apply terrafrom allowlist module
     cmds:
       - '{{.TERRAFORM_BINARY}} apply -target module.rancher-allowlist'
 
   apply:rancher-bootstrap:
+    deps: [init]
     desc: Apply terrafrom bootstrap module
     cmds:
       - '{{.TERRAFORM_BINARY}} apply -target module.rancher-bootstrap'
     preconditions:
       - sh: |
           echo "Waiting for port ready..."
+          {{.TERRAFORM_BINARY}} init
           export FQDN=$(terraform output -raw fqdn)
           while !  nc -z "$FQDN" 443 > /dev/null 2>&1; do   
           sleep 0.1; 
@@ -59,12 +66,14 @@ tasks:
         msg: kubeernetes api not accessible
     
   apply:rancher-config:
+    deps: [init]
     desc: Apply terrafrom config module
     cmds:
       - '{{.TERRAFORM_BINARY}} apply -target module.rancher-config'
     preconditions:
       - sh: |
           echo "Waiting for cluster ready"
+          {{.TERRAFORM_BINARY}} init
           export FQDN=$(terraform output -raw fqdn)
           export KUBECONFIG="${HOME}/.kube/$FQDN"
           while ! kubectl cluster-info > /dev/null 2>&1; do   
@@ -73,27 +82,43 @@ tasks:
         msg: "Cluster Not Ready"
 
   destroy:rancher-infra:
+    deps: [init]
     desc: Destroy Infrastructure
     cmds:
       - '{{.TERRAFORM_BINARY}} destroy -target module.rancher-infra'
 
   destroy:rancher-instance:
+    deps: [init]
     desc: Destroy instance
     cmds:
-      - '{{.TERRAFORM_BINARY}} destroy -target module.rancher-bootstrap'
       - '{{.TERRAFORM_BINARY}} destroy -target module.rancher-instance'
 
+  destroy:rancher-bootstrap:
+    deps: [init]
+    desc: Destroy bootstrap
+    cmds:
+      - '{{.TERRAFORM_BINARY}} destroy -target module.rancher-bootstrap'
+
   destroy:rancher-config:
+    deps: [init]
     desc: Destroy configuration
     cmds:
-      - '{{.TERRAFORM_BINARY}} state rm $({{.TERRAFORM_BINARY}} state list module.rancher-bootstrap )'
-      - '{{.TERRAFORM_BINARY}} state rm $({{.TERRAFORM_BINARY}} state list module.rancher-config )'
+      - |
+        export FQDN="$({{.TERRAFORM_BINARY}} output -raw fqdn)"
+        export KUBECONFIG="${HOME}/.kube/$FQDN"
+        rm -f $KUBECONFIG
+        {{.TERRAFORM_BINARY}} state rm $({{.TERRAFORM_BINARY}} state list module.rancher-bootstrap)
+        {{.TERRAFORM_BINARY}} state rm $({{.TERRAFORM_BINARY}} state list module.rancher-config)
     preconditions:
-      - sh: '{{.TERRAFORM_BINARY}} state list module.rancher-config'
+      - sh: |
+          {{.TERRAFORM_BINARY}} init -input=false >/dev/null
+          {{.TERRAFORM_BINARY}} state list module.rancher-config >/dev/null
         msg: "State not found"
+
 
   apply:
     desc: Run Terraform apply
+    deps: [init]
     cmds:
       - task: apply:rancher-infra
       - task: apply:rancher-instance

@@ -1,27 +1,27 @@
 resource "aws_iam_policy" "this_volume" {
-  name   = "${var.env-name}_volume_policy"
+  name   = "${var.env_name}_volume_policy"
   policy = templatefile("${path.module}/templates/volume_policy.json", {})
 }
 
 resource "aws_iam_policy" "this_external_dns" {
-  name = "${var.env-name}_external_dns_policy"
+  name = "${var.env_name}_external_dns_policy"
   policy = templatefile("${path.module}/templates/external_dns_policy.json", {
     hosted_zone_id = data.aws_route53_zone.this.id
   })
 }
 
 resource "aws_iam_policy" "this_describe_network_interface" {
-  name   = "${var.env-name}_ec2_describe_network_interface"
+  name   = "${var.env_name}_ec2_describe_network_interface"
   policy = templatefile("${path.module}/templates/describe_network_interface.json", {})
 }
 
 resource "aws_iam_policy" "this_system_manager" {
-  name   = "${var.env-name}_system_manager"
+  name   = "${var.env_name}_system_manager"
   policy = templatefile("${path.module}/templates/system_manager_policy.json", {})
 }
 
 resource "aws_iam_role" "this" {
-  name               = "${var.env-name}_instance_role"
+  name               = "${var.env_name}_instance_role"
   assume_role_policy = <<EOF
 {
   "Version": "2012-10-17",
@@ -62,6 +62,6 @@ resource "aws_iam_role_policy_attachment" "this_describe_network_interface" {
 }
 
 resource "aws_iam_instance_profile" "this" {
-  name = "${var.env-name}_rancher_profile"
+  name = "${var.env_name}_rancher_profile"
   role = aws_iam_role.this.name
 }

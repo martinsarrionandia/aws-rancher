@@ -1,6 +1,6 @@
 resource "helm_release" "external-dns-aws" {
   namespace  = kubernetes_namespace_v1.external-dns-aws.metadata[0].name
-  name       = var.external-dns-name
+  name       = var.external_dns_name
   repository = "https://kubernetes-sigs.github.io/external-dns/"
   chart      = "external-dns"
 
@@ -11,7 +11,7 @@ resource "helm_release" "external-dns-aws" {
     },
     {
       name  = "replicaCount"
-      value = "1"
+      value = local.external_dns_replicas
     },
     {
       name  = "service.type"
@@ -30,7 +30,7 @@ resource "helm_release" "external-dns-aws" {
       value = var.region
       }, {
       name  = "aws.roleArn"
-      value = var.rancher-role-arn
+      value = var.rancher_role_arn
   }]
 
   values = [yamlencode(local.external-dns-values)]

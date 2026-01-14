@@ -15,7 +15,7 @@ To get started, make sure you have the following:
 - **[Route53](https://aws.amazon.com/route53/) Hosted Zone**
 - **[S3](https://aws.amazon.com/s3/) Bucket for state files**
 - **[Secrets Manager](https://aws.amazon.com/secrets-manager/)** for storing `passw0rdz.txt`
-- **[t4g](https://aws.amazon.com/ec2/instance-types/t4/)** large EC2 instance (8GB of RAM required for a single-node instance; anything less results in pod restarts)
+- **[t4g](https://aws.amazon.com/ec2/instance_types/t4/)** large EC2 instance (8GB of RAM required for a single-node instance; anything less results in pod restarts)
 - **[Crowdsec Enroll Key](https://www.crowdsec.net/)** Sign up for a free tier account
 
 ---
@@ -109,10 +109,10 @@ This guide walks you through configuring the following example environment:
    - `vars/cattle-prod.tfvars`
 
     Specifically, modify values for:
-    - `instance-key-name`
-    - `domain-name`
-    - `letsencrypt-email`
-    - `rancher-secret-arn`
+    - `instance_key_name`
+    - `domain_name`
+    - `letsencrypt_email`
+    - `rancher_secret_arn`
     - `hostname`
 
    Defaults are configured for the example data but can be adjusted as needed.
@@ -223,7 +223,7 @@ kubectl apply -f /root/allowlist.yaml
 
 By default traefik is configured to log INFO level events.
 
-Set the varialbes: *traefik-log-level* to DEBUG.
+Set the varialbes: *traefik_log_level* to DEBUG.
 
 [rancher-config/variables.tf](rancher-config/variables.tf)
 

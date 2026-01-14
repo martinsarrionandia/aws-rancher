@@ -1,6 +1,6 @@
 resource "aws_vpc_security_group_egress_rule" "outbound_http" {
   description       = "Permit outbound ACME Self Check"
-  security_group_id = var.security-groups.mgmt
+  security_group_id = var.security_groups.mgmt
   from_port         = 80
   to_port           = 80
   ip_protocol       = "tcp"

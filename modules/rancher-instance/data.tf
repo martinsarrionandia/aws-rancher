@@ -3,7 +3,7 @@ data "http" "my_current_ip" {
 }
 
 data "aws_ec2_instance_type" "this" {
-  instance_type = var.instance-type
+  instance_type = var.instance_type
 }
 
 data "aws_ami" "centos9" {

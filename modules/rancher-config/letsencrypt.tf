@@ -1,7 +1,8 @@
 resource "kubernetes_manifest" "certmanager-letsencrypt" {
+  count = 0
   manifest = yamldecode(templatefile("${path.module}/templates/letsencrypt.yaml",
     {
-      letsencrypt-email = var.letsencrypt-email
-      cluster-issuer    = var.cluster-issuer
+      letsencrypt_email = var.letsencrypt_email
+      cluster_issuer    = var.cluster_issuer
   }))
 }

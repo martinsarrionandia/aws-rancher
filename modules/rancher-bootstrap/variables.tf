@@ -1,8 +1,8 @@
-variable "rancher-secret-arn" {
+variable "rancher_secret_arn" {
   type = string
 }
 
-variable "api-url" {
+variable "api_url" {
   type = string
 }
 

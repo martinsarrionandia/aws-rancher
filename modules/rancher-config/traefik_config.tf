@@ -1,5 +1,5 @@
 resource "helm_release" "traefik" {
-  namespace  = var.traefik-namespace
+  namespace  = var.traefik_namespace
   name       = "traefik"
   repository = "https://traefik.github.io/charts"
   chart      = "traefik"
@@ -8,6 +8,12 @@ resource "helm_release" "traefik" {
   replace         = true
   force_update    = true
   upgrade_install = true
+  set = [
+    {
+      name  = "replicaCount"
+      value = local.traefik_replicas
+    }
+  ]
 }
 
 locals {
@@ -28,10 +34,10 @@ providers:
     enabled: true
 logs:
   general:
-    level: "${var.traefik-log-level}"
+    level: "${var.traefik_log_level}"
     format: json
   access:
-    enabled: ${var.traefik-access-log}
+    enabled: ${var.traefik_access_log}
     format: json
 service:
   spec:

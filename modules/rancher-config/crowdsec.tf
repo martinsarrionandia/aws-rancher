@@ -1,5 +1,5 @@
 resource "helm_release" "crowdsec" {
-  namespace  = var.crowdsec-namespace
+  namespace  = var.crowdsec_namespace
   name       = var.crowdsec-name
   repository = "https://crowdsecurity.github.io/helm-charts"
   chart      = "crowdsec"
@@ -34,7 +34,7 @@ apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
   name: ${var.bouncer}
-  namespace: ${var.traefik-namespace}
+  namespace: ${var.traefik_namespace}
 spec:
   plugin:
     ${var.bouncer}:
@@ -42,10 +42,10 @@ spec:
       crowdsecMode: stream
       lapi: enabled
       crowdsecLapiScheme: http
-      crowdsecLapiHost: ${var.crowdsec-name}-service.${var.crowdsec-namespace}:8080
+      crowdsecLapiHost: ${var.crowdsec-name}-service.${var.crowdsec_namespace}:8080
       CrowdsecLapiKey: "${jsondecode(data.aws_secretsmanager_secret_version.this.secret_string)["bouncer-key-traefik"]}"
       crowdsecAppsecEnabled: false
-      logLevel: ${var.traefik-log-level}
+      logLevel: ${var.traefik_log_level}
       clientTrustedips:
       %{for ip in local.ip-allowlist}
         - ${ip}
@@ -59,7 +59,7 @@ agent:
   # Specify each pod whose logs you want to process
   acquisition:
     # The namespace where the pod is located
-    - namespace: "${var.traefik-namespace}"
+    - namespace: "${var.traefik_namespace}"
       # The pod name
       podName: traefik-*
       # as in crowdsec configuration, we need to specify the program name to find a matching parser
@@ -69,6 +69,7 @@ agent:
     - name: COLLECTIONS
       value: "crowdsecurity/traefik"
 lapi:
+  replicas: ${local.crowdsec_lapi_replicas}
   dashboard:
     enabled: false
     image:

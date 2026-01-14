@@ -122,6 +122,7 @@ helm repo update
 kubectl create namespace traefik
 
 helm install traefik traefik/traefik \
+  --set replicas=-1 \
   --namespace traefik \
   --set securityContext.seccompProfile.type=RuntimeDefault \
   --set-json service.spec='{"externalTrafficPolicy":"Local"}'
@@ -158,10 +159,11 @@ kubectl create namespace cattle-system
 
 helm install rancher rancher-stable/rancher \
   --namespace cattle-system \
+  --set replicas=-1 \
   --set hostname="${acme-domain}" \
   --set bootstrapPassword="${bootstrap-password}" \
   --set letsEncrypt.ingress.class=traefik \
-  --set letsEncrypt.email="${letsencrypt-email}" \
+  --set letsEncrypt.email="${letsencrypt_email}" \
   --set ingress.extraAnnotations."traefik\.ingress\.kubernetes\.io\/router\.middlewares"="middleware-rancher-ip-allowlist@kubernetescrd" \
   --set ingress.tls.source=letsEncrypt
 

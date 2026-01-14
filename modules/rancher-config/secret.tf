@@ -1,5 +1,5 @@
 data "aws_secretsmanager_secret" "this" {
-  arn = var.rancher-secret-arn
+  arn = var.rancher_secret_arn
 }
 
 data "aws_secretsmanager_secret_version" "this" {

@@ -1,8 +1,8 @@
 resource "aws_instance" "this" {
-  availability_zone = var.availability-zone
+  availability_zone = var.availability_zone
   ami               = data.aws_ami.centos9.id
   instance_type     = data.aws_ec2_instance_type.this.instance_type
-  key_name          = var.instance-key-name
+  key_name          = var.instance_key_name
   root_block_device {
     volume_size = var.volume-size
     encrypted   = true
@@ -17,13 +17,13 @@ resource "aws_instance" "this" {
     http_put_response_hop_limit = "2"
   }
 
-  iam_instance_profile = var.instance-profile
+  iam_instance_profile = var.instance_profile
   user_data = templatefile("${path.module}/templates/rancher_boot.sh",
     {
       bootstrap-password = jsondecode(data.aws_secretsmanager_secret_version.this.secret_string)["bootstrap"],
       acme-domain        = local.fqdn,
-      cluster-issuer     = var.cluster-issuer,
-      letsencrypt-email  = var.letsencrypt-email,
+      cluster_issuer     = var.cluster_issuer,
+      letsencrypt_email  = var.letsencrypt_email,
       ip-allowlist       = "${chomp(data.http.my_current_ip.response_body)}/32",
   })
 
@@ -34,7 +34,7 @@ resource "aws_instance" "this" {
   tags = {
     Name        = local.fqdn
     Rancher     = "True"
-    Environment = var.env-name
+    Environment = var.env_name
   }
 
   provisioner "local-exec" {
@@ -48,10 +48,10 @@ resource "aws_instance" "this" {
 
 resource "aws_network_interface" "this" {
   subnet_id       = var.subnet-id
-  security_groups = values(var.security-groups)
+  security_groups = values(var.security_groups)
   tags = {
     Name        = "${local.fqdn}-eth0"
-    Environment = var.env-name
+    Environment = var.env_name
   }
 }
 
@@ -59,6 +59,6 @@ resource "aws_eip" "this" {
   network_interface = aws_network_interface.this.id
   tags = {
     Name        = "${local.fqdn}-eth0"
-    Environment = var.env-name
+    Environment = var.env_name
   }
 }

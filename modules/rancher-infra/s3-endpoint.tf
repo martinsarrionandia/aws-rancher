@@ -4,6 +4,6 @@ resource "aws_vpc_endpoint" "this_s3" {
   route_table_ids = [aws_route_table.this.id]
   tags = {
     Name        = "S3 Endpoint"
-    Environment = var.env-name
+    Environment = var.env_name
   }
 }

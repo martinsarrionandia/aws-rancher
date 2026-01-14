@@ -1,9 +1,9 @@
-variable "env-name" {
+variable "env_name" {
   description = "Name of the environment"
   type        = string
 }
 
-variable "availability-zone" {
+variable "availability_zone" {
   description = "As this is a single node deployment it can only go in one AZ. Set it here"
   type        = string
 }
@@ -13,22 +13,22 @@ variable "subnet-id" {
   type        = string
 }
 
-variable "security-groups" {
+variable "security_groups" {
   description = "Map of security groups for the rancher instance"
   type        = map(string)
 }
 
-variable "instance-key-name" {
+variable "instance_key_name" {
   description = "This sets the SSH Key used for the instance"
   type        = string
 }
 
-variable "instance-type" {
+variable "instance_type" {
   description = "The type of instance to use"
   type        = string
 }
 
-variable "instance-profile" {
+variable "instance_profile" {
   description = "The IAM instance profile ARN"
   type        = string
 }
@@ -39,7 +39,7 @@ variable "volume-size" {
   default     = "64"
 }
 
-variable "domain-name" {
+variable "domain_name" {
   description = "This sets the route53 region where records are created"
   type        = string
 }
@@ -49,16 +49,16 @@ variable "hostname" {
   type        = string
 }
 
-variable "letsencrypt-email" {
+variable "letsencrypt_email" {
   description = "Email address for letsencrpyt certificates"
   type        = string
 }
 
-variable "cluster-issuer" {
+variable "cluster_issuer" {
   type    = string
   default = "letsencrypt-production"
 }
 
-variable "rancher-secret-arn" {
+variable "rancher_secret_arn" {
   type = string
 }

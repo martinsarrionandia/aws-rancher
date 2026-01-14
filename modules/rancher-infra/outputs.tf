@@ -1,4 +1,4 @@
-output "rancher-role-arn" {
+output "rancher_role_arn" {
   value = aws_iam_role.this.arn
 }
 
@@ -14,7 +14,7 @@ output "s3-whitelist" {
   value = local.ip_range
 }
 
-output "domain-name" {
+output "domain_name" {
   value = data.aws_route53_zone.this.name
 }
 
@@ -26,7 +26,7 @@ output "subnet-id" {
   value = aws_subnet.this.id
 }
 
-output "security-groups" {
+output "security_groups" {
   value = { mgmt = aws_security_group.this_mgmt.id,
-  ingress = aws_security_group.this_ingress.id }
+  ingress_egress = aws_security_group.this_ingress_egress.id }
 }

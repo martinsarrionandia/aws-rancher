@@ -1,10 +1,10 @@
 resource "aws_subnet" "this" {
-  availability_zone = var.availability-zone
+  availability_zone = var.availability_zone
   vpc_id            = aws_vpc.this.id
-  cidr_block        = var.subnet-cidr
+  cidr_block        = var.subnet_cidr
 
   tags = {
-    Name = "${var.env-name} subnet"
+    Name = "${var.env_name} subnet"
   }
 }
 
@@ -12,7 +12,7 @@ resource "aws_route_table" "this" {
   vpc_id = aws_vpc.this.id
 
   tags = {
-    Name = "${var.env-name} route table"
+    Name = "${var.env_name} route table"
   }
 }
 
@@ -25,7 +25,7 @@ resource "aws_internet_gateway" "this" {
   vpc_id = aws_vpc.this.id
 
   tags = {
-    Name = "${var.env-name} VPC GW"
+    Name = "${var.env_name} VPC GW"
   }
 }
 

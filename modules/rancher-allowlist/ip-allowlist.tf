@@ -3,18 +3,18 @@ resource "aws_ssm_association" "rancher" {
 
   targets {
     key    = "InstanceIds"
-    values = var.instance-ids
+    values = var.instance_ids
   }
 }
 
 resource "aws_ssm_parameter" "ip-allow-list" {
-  name  = "${var.env-name}-ipAllowList"
+  name  = "${var.env_name}-ipAllowList"
   type  = "String"
   value = join(", ", local.ip-allowlist)
 }
 
 resource "aws_ssm_document" "apply_middlware" {
-  name            = "${var.env-name}-apply_ip_allowlist_middleware"
+  name            = "${var.env_name}-apply_ip_allowlist_middleware"
   document_format = "YAML"
   document_type   = "Command"
   content         = local.apply_middleware_document

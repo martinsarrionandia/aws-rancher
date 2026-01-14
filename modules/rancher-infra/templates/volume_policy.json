@@ -5,8 +5,10 @@
             "Sid": "RancherVolumeMount",
             "Effect": "Allow",
             "Action": [
+                "ec2:CreateTags",
                 "ec2:AttachVolume",
-                "ec2:DetachVolume"
+                "ec2:DetachVolume",
+                "ec2:ModifyVolume"
             ],
             "Resource": [
                 "arn:aws:ec2:*:*:instance/*",
@@ -21,13 +23,14 @@
         {
             "Sid": "RancherVolumeDescribe",
             "Effect": "Allow",
-            "Action": "ec2:DescribeVolumes",
-            "Resource": "*"
-        },
-        {
-            "Sid": "RancherInstanceDescribe",
-            "Effect": "Allow",
-            "Action": "ec2:DescribeInstances",
+            "Action": [
+                "ec2:DescribeAvailabilityZones",
+                "ec2:DescribeInstances",
+                "ec2:DescribeTags",
+                "ec2:DescribeVolumes",
+                "ec2:DescribeVolumesModifications",
+                "ec2:DescribeVolumeStatus"
+            ],
             "Resource": "*"
         }
     ]
