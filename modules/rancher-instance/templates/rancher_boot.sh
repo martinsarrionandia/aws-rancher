@@ -159,7 +159,7 @@ kubectl create namespace cattle-system
 
 helm install rancher rancher-stable/rancher \
   --namespace cattle-system \
-  --set replicas=-1 \
+  --set replicas=1 \
   --set hostname="${acme-domain}" \
   --set bootstrapPassword="${bootstrap-password}" \
   --set letsEncrypt.ingress.class=traefik \

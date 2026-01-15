@@ -7,7 +7,7 @@ resource "kubernetes_config_map_v1" "this" {
   data = {
     amazon-ebs-class            = var.amazon_ebs_class
     cluster-issuer              = var.cluster_issuer
-    crowdsec_bouncer_middleware = local.crowdsec_bouncer_middleware
+    crowdsec-bouncer-middleware = local.crowdsec_bouncer_middleware
     public-ip                   = var.public_ip
     region                      = var.region
     domain-name                 = var.domain_name
