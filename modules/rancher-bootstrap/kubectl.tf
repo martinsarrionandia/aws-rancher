@@ -1,6 +1,6 @@
 resource "local_file" "this_kube_config" {
-  content         = local.is-bootstrapped ? "blank" : data.rancher2_cluster.this[0].kube_config
-  filename        = local.kubectl-file
+  content         = local.is_bootstrapped ? "blank" : data.rancher2_cluster.this[0].kube_config
+  filename        = local.kubectl_file
   file_permission = "0600"
   lifecycle {
     ignore_changes = all

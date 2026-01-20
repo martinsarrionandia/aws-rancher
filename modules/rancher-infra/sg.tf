@@ -17,7 +17,7 @@ resource "aws_security_group" "this_ingress_egress" {
 }
 
 resource "aws_vpc_security_group_ingress_rule" "this_mgmt_ssh" {
-  for_each          = toset(local.ip-allowlist)
+  for_each          = toset(local.ip_allowlist)
   description       = "Permit managment SSH"
   security_group_id = aws_security_group.this_mgmt.id
   from_port         = 22

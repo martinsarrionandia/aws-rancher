@@ -1,4 +1,4 @@
 locals {
-  kubectl-file    = pathexpand("~/.kube/${var.fqdn}")
-  is-bootstrapped = fileexists(local.kubectl-file) ? true : false
+  kubectl_file    = pathexpand("~/.kube/${var.fqdn}")
+  is_bootstrapped = fileexists(local.kubectl_file) ? true : false
 }

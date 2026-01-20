@@ -144,11 +144,11 @@ apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
   namespace: middleware
-  name: rancher-ip-allowlist
+  name: rancher-ip_allowlist
 spec:
   ipAllowList:
     sourceRange:  
-      - "${ip-allowlist}"
+      - "${ip_allowlist}"
 EOF
 
 kubectl apply -f $ALLOWLIST
@@ -164,7 +164,7 @@ helm install rancher rancher-stable/rancher \
   --set bootstrapPassword="${bootstrap-password}" \
   --set letsEncrypt.ingress.class=traefik \
   --set letsEncrypt.email="${letsencrypt_email}" \
-  --set ingress.extraAnnotations."traefik\.ingress\.kubernetes\.io\/router\.middlewares"="middleware-rancher-ip-allowlist@kubernetescrd" \
+  --set ingress.extraAnnotations."traefik\.ingress\.kubernetes\.io\/router\.middlewares"="middleware-rancher-ip_allowlist@kubernetescrd" \
   --set ingress.tls.source=letsEncrypt
 
 # set selinux labels for /var/log to be readable by all containers. This is required for Crowdsec

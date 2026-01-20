@@ -1,3 +1,3 @@
-output "kubectl-file" {
-  value = local.kubectl-file
+output "kubectl_file" {
+  value = local.kubectl_file
 }

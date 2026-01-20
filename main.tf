@@ -1,6 +1,6 @@
 module "rancher-infra" {
   source                  = "./modules/rancher-infra"
-  env_name                = local.work-env
+  env_name                = local.work_env
   region                  = local.region
   availability_zone       = local.availability_zone
   subnet_cidr             = var.subnet_cidr
@@ -10,22 +10,22 @@ module "rancher-infra" {
 
 module "rancher-instance" {
   source             = "./modules/rancher-instance"
-  env_name           = local.work-env
+  env_name           = local.work_env
   availability_zone  = local.availability_zone
   instance_key_name  = var.instance_key_name
   instance_type      = var.instance_type
   hostname           = var.hostname
   domain_name        = module.rancher-infra.domain_name
-  instance_profile   = module.rancher-infra.instance-profile
+  instance_profile   = module.rancher-infra.instance_profile
   rancher_secret_arn = var.rancher_secret_arn
   letsencrypt_email  = var.letsencrypt_email
-  subnet-id          = module.rancher-infra.subnet-id
+  subnet_id          = module.rancher-infra.subnet_id
   security_groups    = module.rancher-infra.security_groups
 }
 
 module "rancher-allowlist" {
   source                  = "./modules/rancher-allowlist"
-  env_name                = local.work-env
+  env_name                = local.work_env
   instance_ids            = module.rancher-instance.instance_ids
   ip_allowlist_additional = var.ip_allowlist_additional
 }

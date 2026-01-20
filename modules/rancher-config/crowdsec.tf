@@ -1,9 +1,9 @@
 resource "helm_release" "crowdsec" {
   namespace  = var.crowdsec_namespace
-  name       = var.crowdsec-name
+  name       = var.crowdsec_name
   repository = "https://crowdsecurity.github.io/helm-charts"
   chart      = "crowdsec"
-  values     = [local.crowdsec-helm-values]
+  values     = [local.crowdsec_helm_values]
 
   set = [{
     name  = "agent.resources.limits.memory"
@@ -23,13 +23,13 @@ resource "helm_release" "crowdsec" {
   }]
 }
 
-resource "kubernetes_manifest" "crowdsec-middleware" {
-  manifest = yamldecode(local.crowdsec-middleware-config)
+resource "kubernetes_manifest" "crowdsec_middleware" {
+  manifest = yamldecode(local.crowdsec_middleware_config)
 }
 
 locals {
 
-  crowdsec-middleware-config = <<EOF
+  crowdsec_middleware_config = <<EOF
 apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
@@ -42,17 +42,17 @@ spec:
       crowdsecMode: stream
       lapi: enabled
       crowdsecLapiScheme: http
-      crowdsecLapiHost: ${var.crowdsec-name}-service.${var.crowdsec_namespace}:8080
+      crowdsecLapiHost: ${var.crowdsec_name}-service.${var.crowdsec_namespace}:8080
       CrowdsecLapiKey: "${jsondecode(data.aws_secretsmanager_secret_version.this.secret_string)["bouncer-key-traefik"]}"
       crowdsecAppsecEnabled: false
       logLevel: ${var.traefik_log_level}
       clientTrustedips:
-      %{for ip in local.ip-allowlist}
+      %{for ip in local.ip_allowlist}
         - ${ip}
       %{endfor}
 EOF
 
-  crowdsec-helm-values = <<EOF
+  crowdsec_helm_values = <<EOF
 # for raw logs format: json or cri (docker|containerd)
 container_runtime: containerd
 agent:

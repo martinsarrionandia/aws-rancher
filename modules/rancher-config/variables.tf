@@ -13,7 +13,17 @@ variable "external_dns_name" {
   default = "external-dns"
 }
 
-variable "crowdsec-name" {
+variable "squid_name" {
+  type    = string
+  default = "squid"
+}
+
+variable "squid_port" {
+  type    = string
+  default = "3128"
+}
+
+variable "crowdsec_name" {
   type    = string
   default = "crowdsec"
 }
@@ -49,7 +59,7 @@ variable "traefik_access_log" {
   default = "true"
 }
 
-variable "traefik-external-access-policy" {
+variable "traefik_external_access_policy" {
   description = "Set to Local for middleware IP Whitelist to work"
   type        = string
   default     = "Local"

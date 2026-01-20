@@ -7,10 +7,10 @@ resource "aws_ssm_association" "rancher" {
   }
 }
 
-resource "aws_ssm_parameter" "ip-allow-list" {
+resource "aws_ssm_parameter" "ip_allow_list" {
   name  = "${var.env_name}-ipAllowList"
   type  = "String"
-  value = join(", ", local.ip-allowlist)
+  value = join(", ", local.ip_allowlist)
 }
 
 resource "aws_ssm_document" "apply_middlware" {
@@ -20,7 +20,7 @@ resource "aws_ssm_document" "apply_middlware" {
   content         = local.apply_middleware_document
   lifecycle {
     replace_triggered_by = [
-      aws_ssm_parameter.ip-allow-list
+      aws_ssm_parameter.ip_allow_list
     ]
   }
 }
@@ -33,7 +33,7 @@ parameters:
   ipAllowList:
     type: String
     description: Required The list of ip IDCRs
-    default: "{{ssm:${aws_ssm_parameter.ip-allow-list.name}}}"
+    default: "{{ssm:${aws_ssm_parameter.ip_allow_list.name}}}"
 mainSteps:
 - action: aws:runShellScript
   name: runShellScriptDefaultParams
@@ -45,7 +45,7 @@ mainSteps:
       kind: Middleware
       metadata:
         namespace: middleware
-        name: rancher-ip-allowlist
+        name: rancher-ip_allowlist
       spec:
         ipWhiteList:
           sourceRange: [{{ ipAllowList }}]

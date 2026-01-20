@@ -1,4 +1,4 @@
-resource "kubernetes_manifest" "certmanager-letsencrypt" {
+resource "kubernetes_manifest" "certmanager_letsencrypt" {
   manifest = yamldecode(templatefile("${path.module}/templates/letsencrypt.yaml",
     {
       letsencrypt_email = var.letsencrypt_email

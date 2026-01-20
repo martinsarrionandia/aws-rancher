@@ -6,11 +6,11 @@ output "region" {
   value = var.region
 }
 
-output "s3-prefix-list-id" {
+output "s3_prefix_list_id" {
   value = aws_vpc_endpoint.this_s3.prefix_list_id
 }
 
-output "s3-whitelist" {
+output "s3_whitelist" {
   value = local.ip_range
 }
 
@@ -18,11 +18,11 @@ output "domain_name" {
   value = data.aws_route53_zone.this.name
 }
 
-output "instance-profile" {
+output "instance_profile" {
   value = aws_iam_instance_profile.this.id
 }
 
-output "subnet-id" {
+output "subnet_id" {
   value = aws_subnet.this.id
 }
 

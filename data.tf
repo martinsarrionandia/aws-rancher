@@ -1,5 +1,5 @@
 data "local_file" "kubectl_config" {
-  filename = module.rancher-bootstrap.kubectl-file
+  filename = module.rancher-bootstrap.kubectl_file
 
 }
 

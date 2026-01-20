@@ -81,24 +81,6 @@ tasks:
           done
         msg: "Cluster Not Ready"
 
-  destroy:rancher-infra:
-    deps: [init]
-    desc: Destroy Infrastructure
-    cmds:
-      - '{{.TERRAFORM_BINARY}} destroy -target module.rancher-infra'
-
-  destroy:rancher-instance:
-    deps: [init]
-    desc: Destroy instance
-    cmds:
-      - '{{.TERRAFORM_BINARY}} destroy -target module.rancher-instance'
-
-  destroy:rancher-bootstrap:
-    deps: [init]
-    desc: Destroy bootstrap
-    cmds:
-      - '{{.TERRAFORM_BINARY}} destroy -target module.rancher-bootstrap'
-
   destroy:rancher-config:
     deps: [init]
     desc: Destroy configuration
@@ -115,6 +97,23 @@ tasks:
           {{.TERRAFORM_BINARY}} state list module.rancher-config >/dev/null
         msg: "State not found"
 
+  destroy:rancher-bootstrap:
+    deps: [init]
+    desc: Destroy bootstrap
+    cmds:
+      - '{{.TERRAFORM_BINARY}} destroy -target module.rancher-bootstrap'
+
+  destroy:rancher-instance:
+    deps: [init]
+    desc: Destroy instance
+    cmds:
+      - '{{.TERRAFORM_BINARY}} destroy -target module.rancher-instance'
+
+  destroy:rancher-infra:
+    deps: [init]
+    desc: Destroy Infrastructure
+    cmds:
+      - '{{.TERRAFORM_BINARY}} destroy -target module.rancher-infra'
 
   apply:
     desc: Run Terraform apply

@@ -8,7 +8,7 @@ variable "availability_zone" {
   type        = string
 }
 
-variable "subnet-id" {
+variable "subnet_id" {
   description = "Subnet to deploy the rancher instance"
   type        = string
 }
@@ -33,7 +33,7 @@ variable "instance_profile" {
   type        = string
 }
 
-variable "volume-size" {
+variable "volume_size" {
   description = "The size of the instance volume"
   type        = string
   default     = "64"

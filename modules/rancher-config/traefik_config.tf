@@ -4,7 +4,7 @@ resource "helm_release" "traefik" {
   repository = "https://traefik.github.io/charts"
   chart      = "traefik"
   #version         = "35.2.0"
-  values          = [local.traefik-helm-manifest]
+  values          = [local.traefik_helm_manifest]
   replace         = true
   force_update    = true
   upgrade_install = true
@@ -17,7 +17,7 @@ resource "helm_release" "traefik" {
 }
 
 locals {
-  traefik-helm-manifest = <<EOF
+  traefik_helm_manifest = <<EOF
 deployment:
   additionalVolumes:
   - name: plugins
@@ -41,7 +41,7 @@ logs:
     format: json
 service:
   spec:
-    externalTrafficPolicy: "${var.traefik-external-access-policy}"
+    externalTrafficPolicy: "${var.traefik_external_access_policy}"
 experimental:
   plugins:
     rewrite-body:

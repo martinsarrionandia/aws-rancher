@@ -1,5 +1,5 @@
-resource "helm_release" "external-dns-aws" {
-  namespace  = kubernetes_namespace_v1.external-dns-aws.metadata[0].name
+resource "helm_release" "external_dns_aws" {
+  namespace  = kubernetes_namespace_v1.external_dns_aws.metadata[0].name
   name       = var.external_dns_name
   repository = "https://kubernetes-sigs.github.io/external-dns/"
   chart      = "external-dns"

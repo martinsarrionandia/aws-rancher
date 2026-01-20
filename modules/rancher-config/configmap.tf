@@ -11,5 +11,8 @@ resource "kubernetes_config_map_v1" "this" {
     public-ip                   = var.public_ip
     region                      = var.region
     domain-name                 = var.domain_name
+    http-proxy-namespace        = kubernetes_namespace_v1.proxy.metadata[0].name
+    http-proxy-app              = var.squid_name
+    http-proxy-address          = "${var.squid_name}.${kubernetes_namespace_v1.proxy.metadata[0].name}:${var.squid_port}"
   }
 }

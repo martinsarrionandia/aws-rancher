@@ -4,7 +4,7 @@ resource "aws_instance" "this" {
   instance_type     = data.aws_ec2_instance_type.this.instance_type
   key_name          = var.instance_key_name
   root_block_device {
-    volume_size = var.volume-size
+    volume_size = var.volume_size
     encrypted   = true
     tags = {
       Name    = local.fqdn
@@ -24,7 +24,7 @@ resource "aws_instance" "this" {
       acme-domain        = local.fqdn,
       cluster_issuer     = var.cluster_issuer,
       letsencrypt_email  = var.letsencrypt_email,
-      ip-allowlist       = "${chomp(data.http.my_current_ip.response_body)}/32",
+      ip_allowlist       = "${chomp(data.http.my_current_ip.response_body)}/32",
   })
 
   primary_network_interface {
@@ -47,7 +47,7 @@ resource "aws_instance" "this" {
 }
 
 resource "aws_network_interface" "this" {
-  subnet_id       = var.subnet-id
+  subnet_id       = var.subnet_id
   security_groups = values(var.security_groups)
   tags = {
     Name        = "${local.fqdn}-eth0"
