@@ -83,6 +83,7 @@ acl wpcode dstdomain .wpcode.com
 acl trustindex dstdomain .trustindex.io
 acl aioseo dstdomain .aioseo.com
 acl google dstdomain .google.com .googleusercontent.com .googleapis.com
+acl wpmail dstdomain .wpmailsmtp.com
 
 # --- Disable ALL caching (disk + memory) ---
 cache deny all
@@ -114,6 +115,7 @@ http_access allow wpcode
 http_access allow trustindex
 http_access allow aioseo
 http_access allow google
+http_access allow wpmail
 
 # Default deny
 http_access deny all
