@@ -44,6 +44,12 @@ locals {
         cpu = "25m"
       }
     }
+    sources  = ["service", "ingress", "traefik-proxy"]
+    registry = "txt"
+    extraArgs = [
+      "--txt-owner-id=${var.fqdn}",
+      "--txt-prefix=ext-dns-"
+    ]
     env = [
       {
         name  = "AWS_DEFAULT_REGION"
