@@ -45,7 +45,7 @@ mainSteps:
       kind: Middleware
       metadata:
         namespace: middleware
-        name: rancher-ip_allowlist
+        name: rancher-ip-allowlist
       spec:
         ipWhiteList:
           sourceRange: [{{ ipAllowList }}]

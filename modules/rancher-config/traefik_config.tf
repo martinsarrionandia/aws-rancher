@@ -10,7 +10,7 @@ resource "helm_release" "traefik" {
   upgrade_install = true
   set = [
     {
-      name  = "replicaCount"
+      name  = "deployment.replicas"
       value = local.traefik_replicas
     }
   ]
@@ -32,6 +32,7 @@ securityContext:
 providers:
   kubernetesCRD:
     enabled: true
+    allowCrossNamespace: true
 logs:
   general:
     level: "${var.traefik_log_level}"

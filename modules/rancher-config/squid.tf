@@ -83,7 +83,7 @@ acl wpcode dstdomain .wpcode.com
 acl trustindex dstdomain .trustindex.io
 acl aioseo dstdomain .aioseo.com
 acl google dstdomain .google.com .googleusercontent.com .googleapis.com
-acl wpmail dstdomain .wpmailsmtp.com
+acl wpmail dstdomain .wpmailsmtp.com .wpmailsmtpapi.com
 
 # --- Disable ALL caching (disk + memory) ---
 cache deny all
