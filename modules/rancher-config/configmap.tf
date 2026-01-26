@@ -14,5 +14,18 @@ resource "kubernetes_config_map_v1" "this" {
     http-proxy-namespace        = kubernetes_namespace_v1.proxy.metadata[0].name
     http-proxy-app              = var.squid_name
     http-proxy-address          = "${var.squid_name}.${kubernetes_namespace_v1.proxy.metadata[0].name}:${var.squid_port}"
+    http-proxy = jsonencode(
+      {
+        namespace = kubernetes_namespace_v1.proxy.metadata[0].name
+        app       = var.squid_name
+        address   = "${var.squid_name}.${kubernetes_namespace_v1.proxy.metadata[0].name}:${var.squid_port}"
+      }
+    )
+    crowdsec-bouncer-middleware-map = jsonencode(
+      {
+        name      = var.bouncer
+        namespace = var.traefik_namespace
+      }
+    )
   }
 }
