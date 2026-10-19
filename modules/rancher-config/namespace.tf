@@ -1,6 +1,6 @@
 resource "kubernetes_namespace_v1" "external_dns_aws" {
   metadata {
-    name = "extertnal-dns-aws"
+    name = "external-dns-aws"
     labels = {
       "pod-security.kubernetes.io/enforce" = "baseline"
       "pod-security.kubernetes.io/audit"   = "baseline"

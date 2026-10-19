@@ -6,8 +6,8 @@ resource "helm_release" "external_dns_aws" {
 
   set = [{
     name = "policy"
-    #value = "sync"
-    value = "upsert-only"
+    value = "sync"
+    #value = "upsert-only"
     },
     {
       name  = "replicaCount"
@@ -44,11 +44,12 @@ locals {
         cpu = "25m"
       }
     }
-    sources  = ["service", "ingress", "traefik-proxy"]
+    sources  = ["traefik-proxy"]
     registry = "txt"
     extraArgs = [
       "--txt-owner-id=${var.fqdn}",
-      "--txt-prefix=ext-dns-"
+      "--txt-prefix=ext-dns.",
+      "--annotation-filter=external-dns.kubernetes.io/exclude notin (true)"
     ]
     env = [
       {

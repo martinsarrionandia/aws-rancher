@@ -33,23 +33,22 @@ providers:
   kubernetesCRD:
     enabled: true
     allowCrossNamespace: true
-logs:
-  general:
-    level: "${var.traefik_log_level}"
-    format: json
-  access:
-    enabled: ${var.traefik_access_log}
-    format: json
-    addInternals: true   # Ensures internal logs have better metadata
-    fields:
-      defaultMode: keep
-      names:
-        RequestProtocol: keep
-        RouterName: keep
-        # Add these to prevent the "reflect" error:
-        DownstreamStatus: keep
-        OriginStatus: keep
-        Status: keep
+log:
+  level: "${var.traefik_log_level}"
+  format: json
+accessLog:
+  enabled: ${var.traefik_access_log}
+  format: json
+  addInternals: true   # Ensures internal logs have better metadata
+  fields:
+    defaultMode: keep
+    names:
+      RequestProtocol: keep
+      RouterName: keep
+      # Add these to prevent the "reflect" error:
+      DownstreamStatus: keep
+      OriginStatus: keep
+      Status: keep
 service:
   spec:
     externalTrafficPolicy: "${var.traefik_external_access_policy}"

@@ -78,12 +78,14 @@ acl restricted_destination_subnetworks dst 10.0.0.0/8 172.16.0.0/12 192.168.0.0/
 
 # ---- WordPress.org allowlist (core/plugins/themes updates + downloads) ----
 acl wordpress_org dstdomain .wordpress.org .w.org .s.w.org
-acl elementor dstdomain .elementor.com
+acl elementor dstdomain .elementor.com .elementor.red
 acl wpcode dstdomain .wpcode.com
+acl wpcode_storage dstdom_regex -i ^wpcode\.(nyc1|nyc2|nyc3)\.digitaloceanspaces\.com$
 acl trustindex dstdomain .trustindex.io
-acl aioseo dstdomain .aioseo.com
+acl aioseo dstdomain .aioseo.com .cdn.digitaloceanspaces.com
 acl google dstdomain .google.com .googleusercontent.com .googleapis.com
 acl wpmail dstdomain .wpmailsmtp.com .wpmailsmtpapi.com
+acl freemius dstdomain .freemius.com
 
 # --- Disable ALL caching (disk + memory) ---
 cache deny all
@@ -112,10 +114,12 @@ http_access deny restricted_destination_subnetworks
 http_access allow wordpress_org
 http_access allow elementor
 http_access allow wpcode
+http_access allow wpcode_storage
 http_access allow trustindex
 http_access allow aioseo
 http_access allow google
 http_access allow wpmail
+http_access allow freemius
 
 # Default deny
 http_access deny all

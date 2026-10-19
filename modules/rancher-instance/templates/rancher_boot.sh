@@ -121,6 +121,11 @@ helm repo update
 
 kubectl create namespace traefik
 
+kubectl label namespace traefik \
+  pod-security.kubernetes.io/enforce=baseline \
+  pod-security.kubernetes.io/audit=baseline \
+  pod-security.kubernetes.io/warn=baseline
+
 helm install traefik traefik/traefik \
   --set deployment.replicas=1 \
   --namespace traefik \
